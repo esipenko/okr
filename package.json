@@ -1,0 +1,13 @@
+{
+  "name": "okr",
+  "version": "1.0.0",
+  "description": "OKR system",
+  "main": "index.js",
+  "repository": "https://github.com/esipenko/okr.git",
+  "author": "Sergey Esipenko <s.esipenko@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
