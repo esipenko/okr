@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Param, UseGuards, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import { Response } from 'express';
@@ -15,10 +15,10 @@ export class UserController {
         this.userService
             .createUser(userRegistrationDto)
             .then((userEntity: UserEntity) => {
-                res.send(new UserDto(userEntity));
+                res.status(HttpStatus.OK).send(new UserDto(userEntity));
             })
             .catch((err) => {
-                res.send(err.message);
+                res.status(HttpStatus.BAD_REQUEST).send(err.message);
             });
     }
 
