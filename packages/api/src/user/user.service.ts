@@ -8,25 +8,23 @@ import * as crypto from 'crypto';
 @Injectable()
 export class UserService {
     constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+        @InjectRepository(UserEntity)
+        private userRepository: Repository<UserEntity>,
     ) {}
 
-    async createUser(
-        userRegistrationDto: UserRegistrationDto,
-    ): Promise<UserEntity> {
+    async createUser(userRegistrationDto: UserRegistrationDto): Promise<UserEntity> {
         const salt = crypto.randomBytes(16).toString('hex');
         const algorithm = 'sha1';
         const shasum = crypto.createHash(algorithm);
         shasum.update(salt + userRegistrationDto.password);
         const userEntity = new UserEntity();
-    
+
         userEntity.email = userRegistrationDto.email;
         userEntity.last_name = userRegistrationDto.lastName;
         userEntity.first_name = userRegistrationDto.firstName;
         userEntity.password = shasum.digest('hex');
         userEntity.salt = salt;
-    
+
         return this.userRepository.save(userEntity);
     }
 

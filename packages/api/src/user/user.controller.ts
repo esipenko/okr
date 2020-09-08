@@ -1,12 +1,4 @@
-import {
-    Controller,
-    Post,
-    Body,
-    Res,
-    Get,
-    Param,
-    UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import { Response } from 'express';
@@ -18,11 +10,8 @@ import { UserDto } from './dto/user.dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-  @Post('registration')
-    registration(
-    @Body() userRegistrationDto: UserRegistrationDto,
-    @Res() res: Response,
-    ) {
+    @Post('registration')
+    registration(@Body() userRegistrationDto: UserRegistrationDto, @Res() res: Response): void {
         this.userService
             .createUser(userRegistrationDto)
             .then((userEntity: UserEntity) => {
@@ -33,16 +22,16 @@ export class UserController {
             });
     }
 
-  @UseGuards(AuthGuard())
-  @Get('/:user_id')
-  async getUserById(@Param('user_id') userId: number, @Res() res: Response) {
-      this.userService
-          .getUserByUserId(userId)
-          .then((userEntity: UserEntity) => {
-              res.send(new UserDto(userEntity));
-          })
-          .catch(() => {
-              res.send('User does not exist');
-          });
-  }
+    @UseGuards(AuthGuard())
+    @Get('/:user_id')
+    getUserById(@Param('user_id') userId: number, @Res() res: Response): void {
+        this.userService
+            .getUserByUserId(userId)
+            .then((userEntity: UserEntity) => {
+                res.send(new UserDto(userEntity));
+            })
+            .catch(() => {
+                res.send('User does not exist');
+            });
+    }
 }

@@ -7,7 +7,7 @@ import { AuthUserDto } from './dto/auth-user.dto';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+    @Post('login')
     async login(@Body() req: AuthUserDto): Promise<LoginUserDto> {
         return await this.authService.validateUser(req.email, req.password);
     }

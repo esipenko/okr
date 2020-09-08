@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { UserService } from 'src/user/user.service';
+import { UserEntity } from 'entities';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -13,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
     }
 
-    async validate(payload: JwtPayload) {
+    async validate(payload: JwtPayload): Promise<UserEntity> {
         const user = await this.userService.getUserByUserId(payload.userId);
 
         if (!user || !user.is_enabled) {

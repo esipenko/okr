@@ -4,16 +4,15 @@ import { UserService } from 'src/user/user.service';
 import * as crypto from 'crypto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { LoginUserDto } from './dto/login-user.dto';
+import { Token } from './interfaces/token.interface';
 
 @Injectable()
 export class AuthService {
-    constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-    ) {}
+    constructor(private userService: UserService, private jwtService: JwtService) {}
 
-    async createToken(user: JwtPayload) {
+    createToken(user: JwtPayload): Token {
         const accessToken = this.jwtService.sign(user);
+
         return {
             expiresIn: 3600,
             accessToken,
@@ -28,7 +27,7 @@ export class AuthService {
             shasum.update(user.salt + password);
 
             if (user.password === shasum.digest('hex')) {
-                const token = await this.createToken({ userId: user.user_id });
+                const token = this.createToken({ userId: user.user_id });
 
                 const authUser = new LoginUserDto(user);
 
@@ -38,13 +37,5 @@ export class AuthService {
                 };
             } else throw new UnauthorizedException('Wrong email end(or) password');
         } else throw new UnauthorizedException('Wrong email end(or) password');
-    }
-
-    async login(user: any) {
-        const payload = { username: user.username, sub: user.userId };
-
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
     }
 }
