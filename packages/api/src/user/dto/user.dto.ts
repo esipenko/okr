@@ -5,7 +5,6 @@ export class UserDto {
     firstName: string;
     lastName: string;
     email?: string;
-    isEnabled: boolean;
 
     constructor(user: UserEntity) {
         this.userId = user.user_id;

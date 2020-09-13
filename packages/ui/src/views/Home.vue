@@ -1,8 +1,5 @@
 <template>
-    <div class="home">
-        <img alt="Vue logo" src="../assets/logo.png" />
-        <HelloWorld :msg="msg" />
-    </div>
+    <HelloWorld :msg="msg" />
 </template>
 
 <script lang="ts">

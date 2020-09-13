@@ -1,7 +1,7 @@
-import { Controller, Post, Body, Res, Get, Param, UseGuards, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Param, UseGuards, HttpStatus, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { UserEntity } from 'entities';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from './dto/user.dto';
@@ -17,9 +17,20 @@ export class UserController {
             .then((userEntity: UserEntity) => {
                 res.status(HttpStatus.OK).send(new UserDto(userEntity));
             })
-            .catch((err) => {
-                res.status(HttpStatus.BAD_REQUEST).send(err.message);
+            .catch(() => {
+                res.status(HttpStatus.BAD_REQUEST).send('This email already taken');
             });
+    }
+
+    @UseGuards(AuthGuard())
+    @Get()
+    getCurrentUser(@Req() req: Request, @Res() res: Response): void {
+        const { user } = req;
+        if (user) {
+            res.send(new UserDto(user as UserEntity));
+        } else {
+            res.status(HttpStatus.BAD_REQUEST).send();
+        }
     }
 
     @UseGuards(AuthGuard())

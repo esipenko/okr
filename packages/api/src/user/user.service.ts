@@ -29,10 +29,10 @@ export class UserService {
     }
 
     async getUserByUserId(userId: number): Promise<UserEntity> {
-        return this.userRepository.findOneOrFail(userId);
+        return this.userRepository.findOne(userId);
     }
 
     async getUserByEmail(email: string): Promise<UserEntity> {
-        return this.userRepository.findOneOrFail({ email });
+        return this.userRepository.findOne({ email });
     }
 }

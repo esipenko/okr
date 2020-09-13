@@ -1,54 +1,34 @@
 <template>
-    <div id="app">
-        <div id="nav">
-            <router-link to="/">Home</router-link> |
-            <router-link to="/about">About</router-link> |
-            <router-link to="/login">Login</router-link> |
-            <router-link to="/register">Register</router-link>
+    <v-app>
+        <v-app-bar app color="rgba(14, 187, 218, 1)" dark>
+            <v-spacer></v-spacer>
+            <v-btn
+                v-if="isLoggedIn"
+                color="rgba(14, 187, 218, 1)"
+                class="ma-2"
+                @click="logout"
+                >Logout
+            </v-btn>
+        </v-app-bar>
 
-            <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
-        </div>
-        <router-view />
-    </div>
+        <v-main>
+            <router-view></router-view>
+        </v-main>
+    </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
-@Component
+import { Action, Getter } from "vuex-class";
+import HelloWorld from "./components/HelloWorld.vue";
+@Component({
+    components: { HelloWorld },
+})
 export default class App extends Vue {
-    get isLoggedIn(): boolean {
-        return this["$store"].getters.isLoggedIn;
-    }
+    @Getter("isLoggedIn")
+    isLoggedIn!: boolean;
 
-    logout() {
-        this["$store"].dispatch("logout").then(() => {
-            this["$router"].push("/login");
-        });
-        console.log(process.env);
-    }
+    @Action("logout")
+    logout!: any;
 }
 </script>
-
-<style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-}
-
-#nav {
-    padding: 30px;
-}
-
-#nav a {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-    color: #42b983;
-}
-</style>

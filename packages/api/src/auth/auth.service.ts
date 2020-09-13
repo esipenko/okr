@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as crypto from 'crypto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginDto } from './dto/login.dto';
 import { Token } from './interfaces/token.interface';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class AuthService {
         };
     }
 
-    async validateUser(email: string, password: string): Promise<any> {
+    async validateUser(email: string, password: string): Promise<LoginDto> {
         const user = await this.userService.getUserByEmail(email);
 
         if (user && user.is_enabled) {
@@ -29,12 +29,7 @@ export class AuthService {
             if (user.password === shasum.digest('hex')) {
                 const token = this.createToken({ userId: user.user_id });
 
-                const authUser = new LoginUserDto(user);
-
-                return {
-                    token: token,
-                    user: authUser,
-                };
+                return new LoginDto(user, token);
             } else throw new UnauthorizedException('Wrong email end(or) password');
         } else throw new UnauthorizedException('Wrong email end(or) password');
     }
