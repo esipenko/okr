@@ -1,4 +1,4 @@
-# ui
+# ui-ts
 
 ## Project setup
 ```
