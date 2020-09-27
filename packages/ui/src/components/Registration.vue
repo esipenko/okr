@@ -24,6 +24,12 @@
                                 required
                             ></v-text-field>
                             <v-text-field
+                                v-model="company"
+                                :rules="[requiredRule('Company')]"
+                                label="Company"
+                                required
+                            ></v-text-field>
+                            <v-text-field
                                 v-model="email"
                                 :rules="emailRules"
                                 label="E-mail"
@@ -71,12 +77,12 @@ export default class Register extends Vue {
     @Action("registration")
     registration: any;
 
+    company = "";
     password = "";
     passwordConfirmation = "";
     email = "";
     firstName = "";
     lastName = "";
-    isAdmin = "";
     errorMessage = "";
 
     requiredRule(type: string) {
@@ -110,7 +116,7 @@ export default class Register extends Vue {
             lastName: this.lastName,
             email: this.email,
             password: this.password,
-            isAdmin: this.isAdmin,
+            company: this.company,
         };
 
         this.registration(data)

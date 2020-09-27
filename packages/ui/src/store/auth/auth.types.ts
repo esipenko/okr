@@ -1,8 +1,13 @@
+export interface Company {
+    companyId: number;
+    name: number;
+}
 export interface User {
     firstName: string;
     lastName: string;
     email: string;
     userId: string;
+    company: Company;
 }
 
 interface Token {

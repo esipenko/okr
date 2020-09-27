@@ -14,6 +14,10 @@
                 <h1 class="display-2 font-weight-bold mb-3">Welcome to OKR</h1>
 
                 <p class="subheading font-weight-regular">
+                    Current workspace is {{ user.company.name }}
+                </p>
+
+                <p class="subheading font-weight-regular">
                     Current user is {{ fullName }}
                 </p>
             </v-col>
