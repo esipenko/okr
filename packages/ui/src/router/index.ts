@@ -15,6 +15,17 @@ const routes: Array<RouteConfig> = [
         },
     },
     {
+        path: "/projects",
+        name: "Projects",
+        meta: {
+            requiresAuth: true,
+        },
+        component: () =>
+            import(
+                /* webpackChunkName: "about" */ "../components/Projects.vue"
+            ),
+    },
+    {
         path: "/login",
         name: "login",
         component: () =>
