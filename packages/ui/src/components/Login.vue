@@ -58,6 +58,7 @@ export default class Login extends Vue {
 
     password = "";
     email = "";
+
     emailRules = [
         (v: string) => !!v || "E-mail is required",
         (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
@@ -71,8 +72,8 @@ export default class Login extends Vue {
             return;
         }
 
-        const email = this.email;
-        const password = this.password;
+        const { email, password } = this;
+
         this.login({ email, password })
             .then(() => this.$router.push("/"))
             .catch((err: string) => {

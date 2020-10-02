@@ -3,4 +3,5 @@ export class UserRegistrationDto {
     password: string;
     firstName: string;
     lastName: string;
+    company: string;
 }

@@ -20,6 +20,9 @@ export class UserEntity {
     @Column({ nullable: false })
     password: string;
 
+    @Column({ nullable: false })
+    company_id: number;
+
     @Column({ default: true })
     is_enabled: boolean;
 
