@@ -20,6 +20,13 @@
                 <p class="subheading font-weight-regular">
                     Current user is {{ fullName }}
                 </p>
+
+                <v-btn
+                    color="rgba(14, 187, 218, 1)"
+                    class="ma-2"
+                    @click="$router.push('projects')"
+                    >Projects
+                </v-btn>
             </v-col>
         </v-row>
     </v-container>
