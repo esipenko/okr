@@ -6,13 +6,16 @@ export class UserDto {
     firstName: string;
     lastName: string;
     email?: string;
-    company: CompanyDto;
+    company?: CompanyDto;
 
-    constructor(user: UserEntity, companyEntity: CompanyEntity) {
+    constructor(user: UserEntity, companyEntity?: CompanyEntity) {
         this.userId = user.user_id;
         this.firstName = user.first_name;
         this.lastName = user.last_name;
         this.email = user.email;
-        this.company = new CompanyDto(companyEntity);
+
+        if (companyEntity !== undefined) {
+            this.company = new CompanyDto(companyEntity);
+        }
     }
 }

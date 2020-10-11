@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { CompanyEntity, UserEntity } from 'entities';
+import { CompanyEntity, UserEntity, UserProjectEntity } from 'entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import * as crypto from 'crypto';
@@ -42,5 +42,17 @@ export class UserService {
 
     async getUserByEmail(email: string): Promise<UserEntity> {
         return this.userRepository.findOne({ email });
+    }
+
+    async getUsersByProjectId(projectId: number): Promise<UserEntity[]> {
+        return this.userRepository
+            .createQueryBuilder('u')
+            .leftJoin(UserProjectEntity, 'up', 'up.user_id = u.user_id')
+            .where('up.project_id = :projectId', { projectId })
+            .getMany();
+    }
+
+    async getUsersByCompanyId(companyId: number): Promise<UserEntity[]> {
+        return this.userRepository.find({ company_id: companyId });
     }
 }

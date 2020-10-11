@@ -28,6 +28,7 @@ export class UserController {
     @Get()
     async getCurrentUser(@Req() req: Request, @Res() res: Response): Promise<void> {
         const { user } = req;
+
         if (user) {
             const companyEntity = await this.companyService.getCompany((user as UserEntity).company_id);
             res.send(new UserDto(user as UserEntity, companyEntity));
@@ -36,6 +37,22 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard())
+    @Get('/all')
+    async getUsersByCompanyId(@Req() req: Request, @Res() res: Response): Promise<void> {
+        const { user } = req;
+        this.userService
+            .getUsersByCompanyId((user as UserEntity).company_id)
+            .then(async (userEntities) => {
+                const companyEntity = await this.companyService.getCompany((user as UserEntity).company_id);
+                const userDtos = userEntities.map((userEntity) => new UserDto(userEntity, companyEntity));
+
+                res.send(userDtos);
+            })
+            .catch((err) => {
+                res.status(HttpStatus.BAD_REQUEST).send(err);
+            });
+    }
     @UseGuards(AuthGuard())
     @Get('/:user_id')
     getUserById(@Param('user_id') userId: number, @Res() res: Response): void {
