@@ -63,7 +63,7 @@ export const authActions: ActionTree<AuthState, RootState> = {
         router.push("/login");
     },
     getCurrentUser({ commit }) {
-        if (this.getters["isLoggedIn"]) {
+        if (this.getters.isLoggedIn) {
             axios({
                 url: `${process.env.VUE_APP_URL}/user`,
                 method: "GET",
@@ -72,7 +72,7 @@ export const authActions: ActionTree<AuthState, RootState> = {
                     const user: User = response && response.data;
                     commit("updateUser", user);
                 })
-                .catch(() => {
+                .catch((err) => {
                     this.dispatch("logout");
                 });
         }

@@ -1,6 +1,6 @@
 export interface Company {
     companyId: number;
-    name: number;
+    name: string;
 }
 export interface User {
     firstName: string;
