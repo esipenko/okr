@@ -1,15 +1,26 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+import { CompanyEntity } from './company.entity';
+import { ProjectEntity } from './project.entity';
 
 @Entity('user')
 export class UserEntity {
-    @PrimaryGeneratedColumn()
-    user_id: number;
+    @PrimaryGeneratedColumn({ name: 'user_id' })
+    userId: number;
 
-    @Column({ nullable: false })
-    first_name: string;
+    @Column({ name: 'first_name', nullable: false })
+    firstName: string;
 
-    @Column({ nullable: false })
-    last_name: string;
+    @Column({ name: 'last_name', nullable: false })
+    lastName: string;
 
     @Column({ unique: true, nullable: false })
     email: string;
@@ -20,15 +31,29 @@ export class UserEntity {
     @Column({ nullable: false })
     password: string;
 
-    @Column({ nullable: false })
-    company_id: number;
+    @ManyToOne(() => CompanyEntity, (company) => company.users, { eager: true })
+    company: CompanyEntity;
 
-    @Column({ default: true })
-    is_enabled: boolean;
+    @ManyToMany(() => ProjectEntity, (project) => project.users)
+    @JoinTable({
+        name: 'projects_to_users',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'userId',
+        },
+        inverseJoinColumn: {
+            name: 'project_id',
+            referencedColumnName: 'projectId',
+        },
+    })
+    projects: ProjectEntity[];
 
-    @CreateDateColumn()
-    created_at: Date;
+    @Column({ name: 'is_enabled', default: true })
+    isEnabled: boolean;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date;
 }

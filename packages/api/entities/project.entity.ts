@@ -1,22 +1,32 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+import { CompanyEntity } from './company.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('project')
 export class ProjectEntity {
-    @PrimaryGeneratedColumn()
-    project_id: number;
+    @PrimaryGeneratedColumn({ name: 'project_id' })
+    projectId: number;
 
-    @Column({ nullable: false })
-    company_id: number;
+    @ManyToOne(() => CompanyEntity, (company) => company.projects)
+    company: CompanyEntity;
 
     @Column({ nullable: false })
     name: string;
 
-    @Column({ default: true })
-    is_enabled: boolean;
+    @ManyToMany(() => UserEntity, (users) => users.projects)
+    users: UserEntity[];
 
-    @CreateDateColumn()
-    created_at: Date;
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date;
 }

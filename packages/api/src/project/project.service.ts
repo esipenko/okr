@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserProjectEntity } from 'entities';
+import { CompanyEntity, UserEntity } from 'entities';
 import { ProjectEntity } from 'entities/project.entity';
 import { UserDto } from 'src/user/dto/user.dto';
 import { Repository } from 'typeorm';
@@ -11,66 +11,73 @@ export class ProjectService {
     constructor(
         @InjectRepository(ProjectEntity)
         private projectRepository: Repository<ProjectEntity>,
-        @InjectRepository(UserProjectEntity)
-        private userProjectRepositroy: Repository<UserProjectEntity>,
+        @InjectRepository(UserEntity)
+        private userRepository: Repository<UserEntity>,
+        @InjectRepository(CompanyEntity)
+        private companyRepository: Repository<CompanyEntity>,
     ) {}
 
-    async createProject(companyId: number, project: ProjectDto): Promise<ProjectEntity> {
-        const projectEntity = await this.projectRepository.save({ name: project.name, company_id: companyId });
+    async createProject(user: UserEntity, project: ProjectDto): Promise<ProjectEntity> {
+        const projectEntity = await this.projectRepository.save({ name: project.name, company: user.company });
 
-        if (projectEntity !== undefined) {
-            await this.updateUsersOnProject(projectEntity.project_id, project.users);
-
-            return projectEntity;
-        }
-
-        throw new BadRequestException();
+        await this.updateUsersOnProject(projectEntity.projectId, project.users);
+        return projectEntity;
     }
 
-    getProject(projectId: number): Promise<ProjectEntity> {
-        return this.projectRepository.findOne({ project_id: projectId, is_enabled: true });
+    async getProject(projectId: number): Promise<ProjectEntity> {
+        return await this.projectRepository.findOneOrFail({ projectId });
     }
 
     async deleteProject(projectId: number): Promise<ProjectEntity> {
-        const projectEntity = await this.getProject(projectId);
-
-        if (projectEntity) {
-            projectEntity.is_enabled = false;
-
-            return this.projectRepository.save(projectEntity);
-        }
-
-        throw new NotFoundException();
+        const entity = await this.getProject(projectId);
+        await this.projectRepository.remove(entity);
+        return entity;
     }
 
     async updateProject(projectDto: ProjectDto): Promise<ProjectEntity> {
         const projectEntity = await this.getProject(projectDto.projectId);
 
-        if (projectEntity) {
-            projectEntity.name = projectDto.name;
-            await this.projectRepository.update(projectEntity, { name: projectDto.name });
-            await this.updateUsersOnProject(projectEntity.project_id, projectDto.users);
+        projectEntity.name = projectDto.name;
+        await this.projectRepository.update(projectEntity, { name: projectDto.name });
+        await this.updateUsersOnProject(projectEntity.projectId, projectDto.users);
 
-            return projectEntity;
-        }
-
-        throw new NotFoundException();
+        return projectEntity;
     }
 
-    async updateUsersOnProject(projectId: number, users: UserDto[]): Promise<UserProjectEntity[]> {
-        await this.userProjectRepositroy.delete({ project_id: projectId });
-        const userPromises = users.map((user) =>
-            this.userProjectRepositroy.save({ project_id: projectId, user_id: user.userId }),
-        );
-
-        return Promise.all(userPromises);
+    async updateUsersOnProject(projectId: number, users: UserDto[]): Promise<ProjectEntity> {
+        const project = await this.getProject(projectId);
+        const userIds = users.map((u) => u.userId);
+        const usersEntities = await this.userRepository.findByIds(userIds);
+        project.users = usersEntities ?? [];
+        return this.projectRepository.save(project);
     }
 
-    getProjectsByCompanyId(companyId: number): Promise<ProjectEntity[]> {
-        return this.projectRepository.find({ company_id: companyId, is_enabled: true });
+    async getProjectsByCompanyId(companyId: number): Promise<ProjectEntity[]> {
+        const company = await this.companyRepository.findOneOrFail({
+            relations: ['projects'],
+            where: { companyId },
+        });
+        return company.projects;
     }
 
-    async deleteUserFromProject(projectId: number, userId: number): Promise<void> {
-        this.userProjectRepositroy.delete({ project_id: projectId, user_id: userId });
+    async deleteUserFromProject(projectId: number, userId: number): Promise<ProjectEntity> {
+        const project = await this.projectRepository.findOneOrFail({
+            relations: ['users'],
+            where: { projectId },
+        });
+
+        const newUsers = project.users.filter((u) => u.userId !== +userId);
+
+        project.users = newUsers;
+        return this.projectRepository.save(project);
+    }
+
+    async getUsersByProjectId(projectId: number): Promise<UserEntity[]> {
+        const project = await this.projectRepository.findOneOrFail({
+            relations: ['users'],
+            where: { projectId },
+        });
+
+        return project.users;
     }
 }

@@ -1,88 +1,64 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from 'entities';
-import { Response, Request } from 'express';
+import { Request } from 'express';
+import { UserDto } from 'src/user/dto/user.dto';
 import { ProjectDto } from './dto/project.dto';
-import { ProjectFactory } from './factory/project.factory';
 import { ProjectService } from './project.service';
 
 @UseGuards(AuthGuard())
 @Controller('project')
 export class ProjectController {
-    constructor(private readonly projectService: ProjectService, private readonly projectFactory: ProjectFactory) {}
+    constructor(private readonly projectService: ProjectService) {}
 
     @Get()
-    getProjects(@Req() req: Request, @Res() response: Response): void {
+    async getProjects(@Req() req: Request): Promise<ProjectDto[]> {
         const { user } = req;
 
-        this.projectService
-            .getProjectsByCompanyId((user as UserEntity).company_id)
-            .then((projectEntities) => {
-                const projectsDto = projectEntities.map((projectEntity) =>
-                    this.projectFactory.createProjectDto(projectEntity),
-                );
+        const projectEntities = await this.projectService.getProjectsByCompanyId(
+            (user as UserEntity).company.companyId,
+        );
 
-                Promise.all(projectsDto).then((projects) => {
-                    response.status(HttpStatus.OK).send(projects);
-                });
-            })
-            .catch((err) => {
-                response.status(HttpStatus.BAD_REQUEST).send(err);
-            });
+        return projectEntities.map((p) => new ProjectDto(p));
     }
 
     @Get('/:project_id')
-    getProject(@Param('project_id') projectId: number, @Res() response: Response): void {
-        this.projectService
-            .getProject(projectId)
-            .then(async (projectEntity) => {
-                const projectDto = await this.projectFactory.createProjectDto(projectEntity);
-                response.status(HttpStatus.OK).send(projectDto);
-            })
-            .catch(() => {
-                response.send(HttpStatus.NOT_FOUND).send();
-            });
+    async getProject(@Param('project_id') projectId: number): Promise<ProjectDto> {
+        const projectEntity = await this.projectService.getProject(projectId);
+        return new ProjectDto(projectEntity);
+    }
+
+    @Get('/:project_id/users')
+    async getUsersByProjectId(@Param('project_id') projectId: number): Promise<UserDto[]> {
+        const userEntities = await this.projectService.getUsersByProjectId(projectId);
+        return userEntities.map((u) => new UserDto(u));
     }
 
     @Post()
-    createProject(@Body() projectDto: ProjectDto, @Req() req: Request, @Res() response: Response): void {
+    async createProject(@Body() projectDto: ProjectDto, @Req() req: Request): Promise<ProjectDto> {
         const { user } = req;
-        this.projectService
-            .createProject((user as UserEntity).company_id, projectDto)
-            .then(async (projectEntity) => {
-                response.status(HttpStatus.OK).send(await this.projectFactory.createProjectDto(projectEntity));
-            })
-            .catch((err) => {
-                response.status(HttpStatus.BAD_REQUEST).send(err);
-            });
+        const projectEntity = await this.projectService.createProject(user as UserEntity, projectDto);
+        return new ProjectDto(projectEntity);
     }
 
     @Put('/:project_id')
-    updateProject(@Body() projectDto: ProjectDto, @Res() response: Response): void {
-        this.projectService
-            .updateProject(projectDto)
-            .then(async (projectEntity) => {
-                response.status(HttpStatus.OK).send(await this.projectFactory.createProjectDto(projectEntity));
-            })
-            .catch((err) => {
-                response.status(err.status).send(err);
-            });
+    async updateProject(@Body() projectDto: ProjectDto): Promise<ProjectDto> {
+        const projectEntity = await this.projectService.updateProject(projectDto);
+        return new ProjectDto(projectEntity);
     }
 
     @Delete('/:project_id')
-    deleteProject(@Param('project_id') projectId: number, @Res() response: Response): void {
-        this.projectService
-            .deleteProject(projectId)
-            .then(() => {
-                response.status(HttpStatus.OK).send();
-            })
-            .catch((err) => {
-                response.send(err);
-            });
+    async deleteProject(@Param('project_id') projectId: number): Promise<ProjectDto> {
+        const projectEntity = await this.projectService.deleteProject(projectId);
+        return new ProjectDto(projectEntity);
     }
 
     @Delete('/:project_id/delete-user/:user_id')
-    deleteUserFromProject(@Param('project_id') projectId: number, @Param('user_id') userId: number): Promise<void> {
-        return this.projectService.deleteUserFromProject(projectId, userId);
+    async deleteUserFromProject(
+        @Param('project_id') projectId: number,
+        @Param('user_id') userId: number,
+    ): Promise<ProjectDto> {
+        const projectEntity = await this.projectService.deleteUserFromProject(projectId, userId);
+        return new ProjectDto(projectEntity);
     }
 }

@@ -1,5 +1,5 @@
 import { CompanyDto } from 'src/company/dto/company.dto';
-import { CompanyEntity, UserEntity } from '../../../entities';
+import { UserEntity } from '../../../entities';
 
 export class UserDto {
     userId: number;
@@ -8,14 +8,14 @@ export class UserDto {
     email?: string;
     company?: CompanyDto;
 
-    constructor(user: UserEntity, companyEntity?: CompanyEntity) {
-        this.userId = user.user_id;
-        this.firstName = user.first_name;
-        this.lastName = user.last_name;
+    constructor(user: UserEntity) {
+        this.userId = user.userId;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
         this.email = user.email;
 
-        if (companyEntity !== undefined) {
-            this.company = new CompanyDto(companyEntity);
+        if (user.company) {
+            this.company = new CompanyDto(user.company);
         }
     }
 }
