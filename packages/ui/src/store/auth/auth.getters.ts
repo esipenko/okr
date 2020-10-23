@@ -1,5 +1,5 @@
 import { GetterTree } from "vuex";
-import { AuthState, AuthStatus, User } from "./auth.types";
+import { AuthState, AuthStatus, Company, User } from "./auth.types";
 import moment from "moment";
 import { RootState } from "../root.types";
 
@@ -20,5 +20,13 @@ export const authGetters: GetterTree<AuthState, RootState> = {
     },
     user(state): User | undefined {
         return state.user;
+    },
+    userName(state): string {
+        return state.user
+            ? `${state.user.firstName} ${state.user.lastName}`
+            : "";
+    },
+    company(state): Company {
+        return state.user ? state.user.company : ({} as Company);
     },
 };

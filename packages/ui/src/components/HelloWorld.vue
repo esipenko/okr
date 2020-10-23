@@ -14,19 +14,8 @@
                 <h1 class="display-2 font-weight-bold mb-3">Welcome to OKR</h1>
 
                 <p class="subheading font-weight-regular">
-                    Current workspace is {{ user.company.name }}
+                    Current workspace is {{ company.name }}
                 </p>
-
-                <p class="subheading font-weight-regular">
-                    Current user is {{ fullName }}
-                </p>
-
-                <v-btn
-                    color="rgba(14, 187, 218, 1)"
-                    class="ma-2"
-                    @click="$router.push('projects')"
-                    >Projects
-                </v-btn>
             </v-col>
         </v-row>
     </v-container>
@@ -34,29 +23,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Action, Getter } from "vuex-class";
-import { User } from "../store/auth/auth.types";
+import { Getter } from "vuex-class";
+import { Company } from "../store/auth/auth.types";
 
 @Component
 export default class HelloWorld extends Vue {
-    @Action("getCurrentUser")
-    getCurrentUser: any;
-
-    @Getter("user")
-    user!: User;
-
-    get fullName() {
-        let firstName = "";
-        let lastName = "";
-
-        if (this.user) {
-            firstName = this.user.firstName;
-            lastName = this.user.lastName;
-        } else {
-            this.getCurrentUser();
-        }
-
-        return `${firstName} ${lastName}`;
-    }
+    @Getter("company")
+    company!: Company;
 }
 </script>

@@ -1,19 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as crypto from 'crypto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { LoginDto } from './dto/login.dto';
 import { Token } from './interfaces/token.interface';
-import { CompanyService } from 'src/company/company.service';
+import { InvalidEmailOrPasswordError } from './errors';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private userService: UserService,
-        private jwtService: JwtService,
-        private companyService: CompanyService,
-    ) {}
+    constructor(private userService: UserService, private jwtService: JwtService) {}
 
     createToken(user: JwtPayload): Token {
         const accessToken = this.jwtService.sign(user);
@@ -27,16 +23,16 @@ export class AuthService {
     async validateUser(email: string, password: string): Promise<LoginDto> {
         const user = await this.userService.getUserByEmail(email);
 
-        if (user && user.is_enabled) {
+        if (user && user.isEnabled) {
             const shasum = crypto.createHash('sha1');
             shasum.update(user.salt + password);
 
             if (user.password === shasum.digest('hex')) {
-                const token = this.createToken({ userId: user.user_id });
-                const companyEntity = await this.companyService.getCompany(user.company_id);
+                const token = this.createToken({ userId: user.userId });
+                return new LoginDto(user, token);
+            }
+        }
 
-                return new LoginDto(user, companyEntity, token);
-            } else throw new UnauthorizedException('Wrong email end(or) password');
-        } else throw new UnauthorizedException('Wrong email end(or) password');
+        throw new InvalidEmailOrPasswordError();
     }
 }

@@ -1,52 +1,40 @@
-import { Controller, Post, Body, Res, Get, Param, UseGuards, HttpStatus, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
-import { Response, Request } from 'express';
+import { Request } from 'express';
 import { UserEntity } from 'entities';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from './dto/user.dto';
-import { CompanyService } from 'src/company/company.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService, private readonly companyService: CompanyService) {}
+    constructor(private readonly userService: UserService) {}
 
     @Post('registration')
-    registration(@Body() userRegistrationDto: UserRegistrationDto, @Res() res: Response): void {
-        this.userService
-            .createUser(userRegistrationDto)
-            .then(async (userEntity: UserEntity) => {
-                const companyEntity = await this.companyService.getCompany(userEntity.company_id);
-                res.status(HttpStatus.OK).send(new UserDto(userEntity, companyEntity));
-            })
-            .catch(() => {
-                res.status(HttpStatus.BAD_REQUEST).send('This email already taken');
-            });
+    async registration(@Body() userRegistrationDto: UserRegistrationDto): Promise<UserDto> {
+        const userEntity = await this.userService.createUser(userRegistrationDto);
+        return new UserDto(userEntity);
     }
 
     @UseGuards(AuthGuard())
     @Get()
-    async getCurrentUser(@Req() req: Request, @Res() res: Response): Promise<void> {
+    async getCurrentUser(@Req() req: Request): Promise<UserDto> {
         const { user } = req;
-        if (user) {
-            const companyEntity = await this.companyService.getCompany((user as UserEntity).company_id);
-            res.send(new UserDto(user as UserEntity, companyEntity));
-        } else {
-            res.status(HttpStatus.BAD_REQUEST).send();
-        }
+        return new UserDto(user as UserEntity);
+    }
+
+    @UseGuards(AuthGuard())
+    @Get('/all')
+    async getUsersByCompanyId(@Req() req: Request): Promise<UserDto[]> {
+        const { user } = req;
+        const userEntities = await this.userService.getUsersByCompanyId((user as UserEntity).company.companyId);
+        return userEntities.map((userEntity) => new UserDto(userEntity));
     }
 
     @UseGuards(AuthGuard())
     @Get('/:user_id')
-    getUserById(@Param('user_id') userId: number, @Res() res: Response): void {
-        this.userService
-            .getUserByUserId(userId)
-            .then(async (userEntity: UserEntity) => {
-                const companyEntity = await this.companyService.getCompany(userEntity.company_id);
-                res.send(new UserDto(userEntity, companyEntity));
-            })
-            .catch(() => {
-                res.send('User does not exist');
-            });
+    async getUserById(@Param('user_id') userId: number): Promise<UserDto> {
+        const userEntity = await this.userService.getUserByUserId(userId);
+        return new UserDto(userEntity);
     }
 }

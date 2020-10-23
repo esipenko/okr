@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyEntity } from 'entities';
@@ -16,13 +16,7 @@ export class CompanyService {
     }
 
     async getCompany(companyId: number): Promise<CompanyEntity> {
-        const companyEntity = await this.companyRepository.findOne(companyId);
-
-        if (companyEntity !== undefined && companyEntity.is_enabled === true) {
-            return companyEntity;
-        } else {
-            throw new BadRequestException('Company does not exists');
-        }
+        return await this.companyRepository.findOneOrFail(companyId);
     }
 
     async updateCompany(companyDto: CompanyDto): Promise<CompanyEntity> {
@@ -31,19 +25,12 @@ export class CompanyService {
         if (companyEntity !== undefined) {
             companyEntity.name = companyDto.name;
             return this.companyRepository.save(companyEntity);
-        } else {
-            throw new BadRequestException('Company does not exists');
         }
     }
 
     async deleteCompany(companyId: number): Promise<CompanyEntity> {
         const companyEntity = await this.getCompany(companyId);
-
-        if (companyEntity !== undefined) {
-            companyEntity.is_enabled = false;
-            return this.companyRepository.save(companyEntity);
-        } else {
-            throw new BadRequestException('Company does not exists');
-        }
+        await this.companyRepository.remove(companyEntity);
+        return companyEntity;
     }
 }

@@ -5,7 +5,7 @@ export class CompanyDto {
     name: string;
 
     constructor(companyEntity: CompanyEntity) {
-        this.companyId = companyEntity.company_id;
+        this.companyId = companyEntity.companyId;
         this.name = companyEntity.name;
     }
 }

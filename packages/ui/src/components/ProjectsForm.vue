@@ -19,8 +19,14 @@
             </template>
 
             <v-card>
-                <v-card-title class="headline grey lighten-2">
+                <v-card-title
+                    v-if="project.name === undefined"
+                    class="headline grey lighten-2"
+                >
                     Add project
+                </v-card-title>
+                <v-card-title v-else class="headline grey lighten-2">
+                    Edit project
                 </v-card-title>
 
                 <v-divider></v-divider>
@@ -47,10 +53,18 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialog = false">
-                        Cancel
+                    <v-btn color="primary" text @click="close"> cancel </v-btn>
+                    <v-btn
+                        v-if="project.name === undefined"
+                        color="primary"
+                        text
+                        @click="submit"
+                    >
+                        save
                     </v-btn>
-                    <v-btn color="primary" text @click="submit"> accept </v-btn>
+                    <v-btn v-else color="primary" text @click="submit">
+                        edit
+                    </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -59,23 +73,52 @@
 
 <script lang="ts">
 import { Component, Ref, Vue } from "vue-property-decorator";
+import { Action, Getter } from "vuex-class";
 import { User } from "../store/auth/auth.types";
 import { Project } from "../utils/test-data/project";
-import createUser from "../utils/test-data/users";
+import { intersectionWith } from "lodash";
+import { ProjectDto } from "../store/projects/project.types";
 
 @Component
 export default class ProjectForm extends Vue {
     @Ref("form") from: any;
+    @Action("getUsers") getUsers: any;
+    @Action("setProjectUsers") setProjectUsers: any;
+    @Getter("users") users!: User[];
+    @Getter("projects") projects!: ProjectDto[];
+    @Getter("projectUsers") projectUsers: any;
 
     dialog = false;
     projectName = "";
-    users: User[] = [];
     selectedUsers: User[] = [];
+    project = {} as ProjectDto;
 
-    created() {
-        for (let i = 0; i < Math.ceil(Math.random() * 6); i++) {
-            this.users.push(createUser());
+    openEditForm(project: ProjectDto) {
+        this.project = project;
+        this.projectName = project.name;
+        this.dialog = true;
+
+        if (project.users === undefined) {
+            this.setProjectUsers(project).then(() => {
+                this.updateSelectedUsers();
+            });
+
+            return;
         }
+
+        this.updateSelectedUsers();
+    }
+
+    updateSelectedUsers() {
+        this.selectedUsers = intersectionWith(
+            this.users,
+            this.projectUsers(this.project.projectId),
+            (a: User, b: User) => a.userId === b.userId
+        );
+    }
+
+    mounted() {
+        this.getUsers();
     }
 
     projectRule = [(v: string) => !!v || "Project name required"];
@@ -85,13 +128,26 @@ export default class ProjectForm extends Vue {
             return;
         }
 
-        this.dialog = false;
         const newProject: Project = {
+            projectId: this.project.projectId,
             name: this.projectName,
             users: [...this.selectedUsers],
         };
 
-        this.$emit("add-project", newProject);
+        if (this.project.name === undefined) {
+            this.$emit("add-project", newProject);
+        } else {
+            this.$emit("edit-project", newProject);
+        }
+
+        this.close();
+    }
+
+    close() {
+        this.dialog = false;
+        this.selectedUsers = [];
+        this.projectName = "";
+        this.project = {} as ProjectDto;
     }
 }
 </script>
