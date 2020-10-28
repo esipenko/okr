@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { CompanyEntity } from './company.entity';
 import { ProjectEntity } from './project.entity';
+import { RoleEntity } from './role.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -47,6 +48,9 @@ export class UserEntity {
         },
     })
     projects: ProjectEntity[];
+
+    @ManyToOne(() => RoleEntity, (role) => role.users, { eager: true })
+    role: RoleEntity;
 
     @Column({ name: 'is_enabled', default: true })
     isEnabled: boolean;

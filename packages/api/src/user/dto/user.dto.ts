@@ -1,4 +1,5 @@
 import { CompanyDto } from 'src/company/dto/company.dto';
+import { RoleDto } from 'src/roles/dto/role.dto';
 import { UserEntity } from '../../../entities';
 
 export class UserDto {
@@ -7,6 +8,7 @@ export class UserDto {
     lastName: string;
     email?: string;
     company?: CompanyDto;
+    role?: RoleDto;
 
     constructor(user: UserEntity) {
         this.userId = user.userId;
@@ -16,6 +18,10 @@ export class UserDto {
 
         if (user.company) {
             this.company = new CompanyDto(user.company);
+        }
+
+        if (user.role) {
+            this.role = user.role;
         }
     }
 }

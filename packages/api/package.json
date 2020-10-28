@@ -22,7 +22,9 @@
     "pretty": "lint --write .",
     "migration:generate": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -n",
     "migration:run": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run",
-    "migration:revert": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert"
+    "migration:revert": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert",
+    "migration:create": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:create -n"
+  
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

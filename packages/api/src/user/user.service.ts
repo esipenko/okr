@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { CompanyEntity, ProjectEntity, UserEntity } from 'entities';
+import { CompanyEntity, ProjectEntity, RoleEntity, UserEntity } from 'entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import * as crypto from 'crypto';
 import { EmailAlreadyExistsError } from './errors';
+import { DefaultRoles } from 'src/roles/acl.rules';
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,8 @@ export class UserService {
         private companyRepository: Repository<CompanyEntity>,
         @InjectRepository(ProjectEntity)
         private projectRepository: Repository<ProjectEntity>,
+        @InjectRepository(RoleEntity)
+        private roleRepository: Repository<RoleEntity>,
     ) {}
 
     async createUser(userRegistrationDto: UserRegistrationDto): Promise<UserEntity> {
@@ -30,9 +33,13 @@ export class UserService {
         shasum.update(salt + userRegistrationDto.password);
 
         let companyEntity = await this.companyRepository.findOne({ name: userRegistrationDto.company });
+        let role = new RoleEntity();
 
         if (companyEntity === undefined) {
             companyEntity = await this.companyRepository.save({ name: userRegistrationDto.company });
+            role = await this.roleRepository.findOne({ companyId: null, name: DefaultRoles.Administrator });
+        } else {
+            role = await this.roleRepository.findOne({ companyId: null, name: DefaultRoles.User });
         }
 
         const userEntity = new UserEntity();
@@ -42,6 +49,7 @@ export class UserService {
         userEntity.password = shasum.digest('hex');
         userEntity.salt = salt;
         userEntity.company = companyEntity;
+        userEntity.role = role;
 
         return await this.userRepository.save(userEntity);
     }
