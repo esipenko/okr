@@ -8,6 +8,7 @@ import { Entities } from 'entities';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { ProjectModule } from './project/project.module';
         UserModule,
         AuthModule,
         ProjectModule,
+        RolesModule,
     ],
     controllers: [AppController],
     providers: [AppService],

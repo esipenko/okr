@@ -5,6 +5,9 @@ import { Request } from 'express';
 import { UserEntity } from 'entities';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from './dto/user.dto';
+import { ACLRule } from 'src/roles/acl.rules';
+import { RoleControl } from 'src/roles/decorator/role.decorator';
+import { RoleGuard } from 'src/roles/guard/role.guard';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +26,8 @@ export class UserController {
         return new UserDto(user as UserEntity);
     }
 
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RoleGuard)
+    @RoleControl(ACLRule.USERS_LIST)
     @Get('/all')
     async getUsersByCompanyId(@Req() req: Request): Promise<UserDto[]> {
         const { user } = req;
@@ -31,7 +35,8 @@ export class UserController {
         return userEntities.map((userEntity) => new UserDto(userEntity));
     }
 
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(), RoleGuard)
+    @RoleControl(ACLRule.USERS_LIST)
     @Get('/:user_id')
     async getUserById(@Param('user_id') userId: number): Promise<UserDto> {
         const userEntity = await this.userService.getUserByUserId(userId);
