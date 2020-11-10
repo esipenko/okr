@@ -1,17 +1,26 @@
-import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from 'entities';
 import { CreateRoleDto, RoleDto } from './dto/role.dto';
 import { RoleGuard } from './guard/role.guard';
 import { RolesService } from './roles.service';
 import { Request } from 'express';
-import { UserDto } from 'src/user/dto/user.dto';
-import { ACLRule } from './acl.rules';
 import { RoleControl } from './decorator/role.decorator';
+import { UserDto } from 'src/user/dto/user.dto';
+import { ACLRule } from 'shared';
 
 @Controller('role')
 export class RolesController {
     constructor(private readonly roleService: RolesService) {}
+
+    @UseGuards(AuthGuard(), RoleGuard)
+    @Get()
+    @RoleControl(ACLRule.ROLES_LIST)
+    async getAvailableRoles(@Req() req: Request): Promise<RoleDto[]> {
+        const user = <UserEntity>req.user;
+        const roleEntities = await this.roleService.getAvailableRoles(user.company.companyId);
+        return roleEntities.map((e) => new RoleDto(e));
+    }
 
     @UseGuards(AuthGuard(), RoleGuard)
     @Post()

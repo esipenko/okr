@@ -1,3 +1,5 @@
+import { ACLRule } from "shared";
+
 export interface Company {
     companyId: number;
     name: string;
@@ -8,6 +10,9 @@ export interface User {
     email: string;
     userId: number;
     company: Company;
+    role: {
+        rules: ACLRule[];
+    };
 }
 
 interface Token {

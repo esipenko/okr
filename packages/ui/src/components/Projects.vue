@@ -10,16 +10,20 @@
             >
                 <template v-slot:activator>
                     <v-list-item-title>{{ project.name }}</v-list-item-title>
-                    <v-list-item-icon
-                        @click.stop="openEditProjectForm(project)"
-                    >
-                        <v-icon>mdi-square-edit-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-icon>
-                        <v-icon @click.prevent="deleteProject(project)"
-                            >mdi-delete</v-icon
+                    <AccessControl :accessRoles="[ACLRule.PROJECTS_UPDATE]">
+                        <v-list-item-icon
+                            @click.stop="openEditProjectForm(project)"
                         >
-                    </v-list-item-icon>
+                            <v-icon>mdi-square-edit-outline</v-icon>
+                        </v-list-item-icon>
+                    </AccessControl>
+                    <AccessControl :accessRoles="[ACLRule.PROJECTS_DELETE]">
+                        <v-list-item-icon>
+                            <v-icon @click.prevent="deleteProject(project)"
+                                >mdi-delete</v-icon
+                            >
+                        </v-list-item-icon>
+                    </AccessControl>
                 </template>
 
                 <v-list-item
@@ -30,16 +34,20 @@
                     <v-list-item-title
                         v-text="user.firstName + ' ' + user.lastName"
                     ></v-list-item-title>
-                    <v-list-item-icon
-                        @click="
-                            deleteUserFromProject({
-                                projectId: project.projectId,
-                                userId: user.userId,
-                            })
-                        "
+                    <AccessControl
+                        :accessRoles="[ACLRule.PROJECTS_USERS_LIST_DELETE]"
                     >
-                        <v-icon>mdi-delete</v-icon>
-                    </v-list-item-icon>
+                        <v-list-item-icon
+                            @click="
+                                deleteUserFromProject({
+                                    projectId: project.projectId,
+                                    userId: user.userId,
+                                })
+                            "
+                        >
+                            <v-icon>mdi-delete</v-icon>
+                        </v-list-item-icon>
+                    </AccessControl>
                 </v-list-item>
             </v-list-group>
         </v-list>
@@ -61,9 +69,11 @@ import { Component, Ref, Vue } from "vue-property-decorator";
 import ProjectsForm from "./ProjectsForm.vue";
 import { Action, Getter } from "vuex-class";
 import { ProjectDto } from "../store/projects/project.types";
+import AccessControl from "./AccessControl.vue";
+import { ACLRule } from "shared";
 
 @Component({
-    components: { ProjectsForm },
+    components: { ProjectsForm, AccessControl },
 })
 export default class Projects extends Vue {
     @Action("getProjects") getProjects: any;
@@ -74,6 +84,7 @@ export default class Projects extends Vue {
     @Action("setProjectUsers") setProjectUsers: any;
     @Getter("projects") projects!: ProjectDto[];
     @Ref("projectForm") projectForm!: ProjectsForm;
+    ACLRule: any = ACLRule;
 
     mounted() {
         this.getProjects();

@@ -1,7 +1,7 @@
 import { Reflector } from '@nestjs/core';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserEntity } from 'entities';
-import { ACLRule } from '../acl.rules';
+import { ACLRule } from 'shared';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -9,7 +9,6 @@ export class RoleGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const user = <UserEntity>context.switchToHttp().getRequest().user;
-        console.log('RoleGuard -> constructor -> user', user);
 
         if (!user) {
             throw new UnauthorizedException();

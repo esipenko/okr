@@ -15,4 +15,13 @@ export const userActions: ActionTree<UserState, RootState> = {
             commit("setUsers", payload);
         });
     },
+    deleteUser({ commit }, userId: number) {
+        axios({
+            url: `${process.env.VUE_APP_URL}/user/${userId}`,
+            method: "DELETE",
+        }).then((response) => {
+            const payload: User = response && response.data;
+            commit("deleteUsers", payload);
+        });
+    },
 };

@@ -4,6 +4,7 @@ import { authStore } from "./auth/auth.store";
 import { RootState } from "./root.types";
 import { projectStore } from "./projects/project.store";
 import { userStore } from "./user/user.store";
+import { rolesStore } from "./roles/roles.store";
 
 Vue.use(Vuex);
 
@@ -12,6 +13,7 @@ const store: StoreOptions<RootState> = {
         authStore,
         projectStore,
         userStore,
+        rolesStore,
     },
 };
 

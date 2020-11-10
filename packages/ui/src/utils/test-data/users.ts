@@ -13,6 +13,7 @@ const createUser = (): User => {
         email: uuid(),
         firstName: uuid(),
         lastName: uuid(),
+        role: { rules: [] },
     };
 
     userId++;

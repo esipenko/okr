@@ -72,6 +72,12 @@ export class UserService {
             relations: ['users'],
             where: { companyId },
         });
-        return companyEntity.users;
+        return companyEntity.users.filter((u) => u.isEnabled === true);
+    }
+
+    async deleteUserByUserId(userId: number): Promise<UserEntity> {
+        const userEntity = await this.userRepository.findOneOrFail({ userId });
+        userEntity.isEnabled = false;
+        return await this.userRepository.save(userEntity);
     }
 }

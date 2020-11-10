@@ -6,11 +6,11 @@ import { userGetters } from "./user.getters";
 import { userMutations } from "./user.mutations";
 
 export interface UserState {
-    users: User[];
+    users: User[] | undefined;
 }
 
 const userState: UserState = {
-    users: [],
+    users: undefined,
 };
 
 export const userStore: Module<UserState, RootState> = {

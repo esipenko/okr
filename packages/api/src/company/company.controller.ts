@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ACLRule } from 'src/roles/acl.rules';
+import { ACLRule } from 'shared';
 import { RoleControl } from 'src/roles/decorator/role.decorator';
 import { CompanyService } from './company.service';
 import { CompanyDto } from './dto/company.dto';

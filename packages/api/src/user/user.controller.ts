@@ -1,13 +1,13 @@
-import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import { Request } from 'express';
 import { UserEntity } from 'entities';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from './dto/user.dto';
-import { ACLRule } from 'src/roles/acl.rules';
 import { RoleControl } from 'src/roles/decorator/role.decorator';
 import { RoleGuard } from 'src/roles/guard/role.guard';
+import { ACLRule } from 'shared';
 
 @Controller('user')
 export class UserController {
@@ -40,6 +40,14 @@ export class UserController {
     @Get('/:user_id')
     async getUserById(@Param('user_id') userId: number): Promise<UserDto> {
         const userEntity = await this.userService.getUserByUserId(userId);
+        return new UserDto(userEntity);
+    }
+
+    @UseGuards(AuthGuard(), RoleGuard)
+    @RoleControl(ACLRule.USERS_LIST)
+    @Delete('/:user_id')
+    async deleteUserById(@Param('user_id') userId: number): Promise<UserDto> {
+        const userEntity = await this.userService.deleteUserByUserId(userId);
         return new UserDto(userEntity);
     }
 }
