@@ -13,6 +13,7 @@ export const rolesActions: ActionTree<RolesState, RootState> = {
             method: "get",
         }).then((response) => {
             const payload: Role = response && response.data;
+            console.log("getRoles -> payload", response.data);
             commit("setRoles", payload);
         });
     },
