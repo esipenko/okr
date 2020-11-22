@@ -25,4 +25,33 @@ export const rolesActions: ActionTree<RolesState, RootState> = {
             commit("assignRole", payload);
         });
     },
+    createRole({ commit }, role) {
+        axios({
+            url: `${process.env.VUE_APP_URL}/role`,
+            method: "post",
+            data: role,
+        }).then((response) => {
+            const payload: User = response && response.data;
+            commit("createRole", payload);
+        });
+    },
+    deleteRole({ commit }, role) {
+        axios({
+            url: `${process.env.VUE_APP_URL}/role/${role.roleId}`,
+            method: "delete",
+        }).then((response) => {
+            const payload: Role = response && response.data;
+            commit("deleteRole", payload);
+        });
+    },
+    editRole({ commit }, role) {
+        axios({
+            url: `${process.env.VUE_APP_URL}/role`,
+            method: "put",
+            data: role,
+        }).then((response) => {
+            const payload: User = response && response.data;
+            commit("editRole", payload);
+        });
+    },
 };

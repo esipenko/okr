@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards, Delete, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from 'entities';
 import { CreateRoleDto, RoleDto } from './dto/role.dto';
@@ -37,5 +37,22 @@ export class RolesController {
     async assignRole(@Param('role_id') roleId: number, @Param('user_id') userId: number): Promise<UserDto> {
         const userEntity = await this.roleService.assignRole(userId, roleId);
         return new UserDto(userEntity);
+    }
+
+    @UseGuards(AuthGuard(), RoleGuard)
+    @Delete('/:role_id')
+    @RoleControl(ACLRule.ROLES_DELETE)
+    async deleteRole(@Param('role_id') roleId: number, @Req() req: Request): Promise<RoleDto> {
+        const user = <UserEntity>req.user;
+        const roleEntity = await this.roleService.deleteRole(roleId, user.company.companyId);
+        return new RoleDto(roleEntity);
+    }
+
+    @UseGuards(AuthGuard(), RoleGuard)
+    @Put()
+    @RoleControl(ACLRule.ROLES_UPDATE)
+    async editRole(@Body() role: RoleDto): Promise<RoleDto> {
+        const roleEntity = await this.roleService.editRole(role);
+        return new RoleDto(roleEntity);
     }
 }
