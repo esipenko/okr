@@ -24,4 +24,11 @@ export class RolesService {
         user.role = role;
         return this.userRepository.save(user);
     }
+
+    async getAvailableRoles(companyId: number): Promise<RoleEntity[]> {
+        return await this.roleRepository.find({
+            where: [{ companyId }, { companyId: null }],
+        });
+
+    }
 }

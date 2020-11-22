@@ -1,6 +1,6 @@
-import { ACLRule } from 'src/roles/acl.rules';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { ACLRule } from 'shared';
 
 @Entity('role')
 export class RoleEntity {

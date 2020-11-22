@@ -4,6 +4,6 @@ import { UserState } from "./user.store";
 
 export const userGetters: GetterTree<UserState, RootState> = {
     users(state) {
-        return state.users;
+        return state.users ?? [];
     },
 };

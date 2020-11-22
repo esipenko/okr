@@ -1,5 +1,5 @@
 import { RoleEntity } from 'entities';
-import { ACLRule } from '../acl.rules';
+import { ACLRule } from 'shared';
 
 export class CreateRoleDto {
     name: string;

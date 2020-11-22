@@ -1,5 +1,6 @@
-import { ACLRule, defaultRules } from '../../api/src/roles/acl.rules';
+import { defaultRules } from '../../api/src/roles/acl.rules';
 import { MigrationInterface, QueryRunner } from 'typeorm';
+import { ACLRule } from 'shared';
 
 export class DefaultRoles1603903430415 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {

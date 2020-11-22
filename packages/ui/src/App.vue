@@ -1,21 +1,4 @@
 <template>
-    <!-- <v-app>
-        <v-app-bar app color="rgba(14, 187, 218, 1)" dark>
-            <v-spacer></v-spacer>
-            <v-btn
-                v-if="isLoggedIn"
-                color="rgba(14, 187, 218, 1)"
-                class="ma-2"
-                @click="logout"
-                >Logout
-            </v-btn>
-        </v-app-bar>
-
-        <v-main>
-            <router-view></router-view>
-        </v-main>
-    </v-app> -->
-
     <v-app>
         <v-navigation-drawer v-if="isLoggedIn" v-model="drawer" fixed app>
             <v-list-item>
@@ -37,13 +20,13 @@
                     :to="item.to"
                     exact
                 >
-                    <!-- <v-list-item-icon>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-icon> -->
-
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
+                    <access-control :accessRoles="item.rules">
+                        <v-list-item-content>
+                            <v-list-item-title>{{
+                                item.title
+                            }}</v-list-item-title>
+                        </v-list-item-content>
+                    </access-control>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -84,10 +67,13 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
+import { ACLRule } from "../../api/dist/src/roles/acl.rules";
 import HelloWorld from "./components/HelloWorld.vue";
 import { User } from "./store/auth/auth.types";
+import AccessControl from "./components/AccessControl.vue";
+
 @Component({
-    components: { HelloWorld },
+    components: { HelloWorld, AccessControl },
 })
 export default class App extends Vue {
     @Getter("isLoggedIn")
@@ -109,8 +95,10 @@ export default class App extends Vue {
 
     drawer = true;
     items = [
-        { icon: "home", title: "Home", to: "/" },
-        { icon: "bubble_chart", title: "Projects", to: "/projects" },
+        { rules: [], title: "Home", to: "/" },
+        { rules: [], title: "Projects", to: "/projects" },
+        { rules: [], title: "Users", to: "/users" },
+        { rules: [ACLRule.ROLES_LIST], title: "Roles", to: "/roles" },
     ];
 }
 </script>

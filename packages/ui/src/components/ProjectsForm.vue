@@ -2,20 +2,22 @@
     <div class="text-center">
         <v-dialog v-model="dialog" width="500">
             <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    color="rgba(14, 187, 218, 1)"
-                    fab
-                    large
-                    dark
-                    bottom
-                    right
-                    class="add-project-btn"
-                    v-bind="attrs"
-                    @click.native="dialog = true"
-                    v-on="on"
-                >
-                    <v-icon>mdi-plus-outline</v-icon>
-                </v-btn>
+                <access-control :accessRoles="[ACLRule.PROJECTS_CREATE]">
+                    <v-btn
+                        color="rgba(14, 187, 218, 1)"
+                        fab
+                        large
+                        dark
+                        bottom
+                        right
+                        class="add-project-btn"
+                        v-bind="attrs"
+                        @click.native="dialog = true"
+                        v-on="on"
+                    >
+                        <v-icon>mdi-plus-outline</v-icon>
+                    </v-btn>
+                </access-control>
             </template>
 
             <v-card>
@@ -78,8 +80,12 @@ import { User } from "../store/auth/auth.types";
 import { Project } from "../utils/test-data/project";
 import { intersectionWith } from "lodash";
 import { ProjectDto } from "../store/projects/project.types";
+import AccessControl from "./AccessControl.vue";
+import { ACLRule } from "shared";
 
-@Component
+@Component({
+    components: { AccessControl },
+})
 export default class ProjectForm extends Vue {
     @Ref("form") from: any;
     @Action("getUsers") getUsers: any;
@@ -87,6 +93,7 @@ export default class ProjectForm extends Vue {
     @Getter("users") users!: User[];
     @Getter("projects") projects!: ProjectDto[];
     @Getter("projectUsers") projectUsers: any;
+    ACLRule: any = ACLRule;
 
     dialog = false;
     projectName = "";

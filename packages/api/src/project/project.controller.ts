@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from 
 import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from 'entities';
 import { Request } from 'express';
-import { ACLRule } from 'src/roles/acl.rules';
+import { ACLRule } from 'shared';
 import { RoleControl } from 'src/roles/decorator/role.decorator';
 import { RoleGuard } from 'src/roles/guard/role.guard';
 import { UserDto } from 'src/user/dto/user.dto';
@@ -35,7 +35,7 @@ export class ProjectController {
     }
 
     @Get('/:project_id/users')
-    @RoleControl(ACLRule.PROJECTS_USERS_LIST)
+    @RoleControl(ACLRule.PROJECTS_LIST)
     @UseGuards(AuthGuard(), RoleGuard)
     async getUsersByProjectId(@Param('project_id') projectId: number): Promise<UserDto[]> {
         const userEntities = await this.projectService.getUsersByProjectId(projectId);
