@@ -8,6 +8,11 @@ I'm trying crate OKR system
 In this repository there are two worksapces:
 * ui - frontend
 * api - backend
+* shared - shared code. ACL, dto etc
+
+# Shared
+cd ./packages/shared
+npm run build
 
 # UI
 To run the application, run the following commands:
