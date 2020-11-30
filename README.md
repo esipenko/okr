@@ -11,8 +11,10 @@ In this repository there are two worksapces:
 * shared - shared code. ACL, dto etc
 
 # Shared
+```
 cd ./packages/shared
 npm run build
+```
 
 # UI
 To run the application, run the following commands:
