@@ -8,6 +8,7 @@ export class CreateRoleDto {
 
 export class RoleDto {
     roleId: number;
+    companyId: number;
     name: string;
     rules: ACLRule[];
 
@@ -15,5 +16,6 @@ export class RoleDto {
         this.roleId = roleEntity.roleId;
         this.name = roleEntity.name;
         this.rules = roleEntity.rules;
+        this.companyId = roleEntity.companyId;
     }
 }

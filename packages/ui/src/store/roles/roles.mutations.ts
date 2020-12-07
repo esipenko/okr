@@ -22,4 +22,17 @@ export const rolesMutations: MutationTree<RolesState> = {
         );
         Vue.set(state, "roles", newRoles);
     },
+    editRole(state, payload) {
+        if (state.roles === undefined) {
+            return;
+        }
+
+        const idx = state.roles?.findIndex((r) => r.roleId === payload.roleId);
+
+        if (idx === -1) {
+            return;
+        }
+
+        Vue.set(state.roles, idx, payload);
+    },
 };

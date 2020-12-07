@@ -11,6 +11,7 @@ export const authGetters: GetterTree<AuthState, RootState> = {
                 localStorage.getItem("expirationTime")!
             );
 
+            console.log(moment().isBefore(expiresAt));
             return moment().isBefore(expiresAt);
         }
 
