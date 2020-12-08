@@ -10,7 +10,7 @@ export const authActions: ActionTree<AuthState, RootState> = {
         return new Promise((resolve, reject) => {
             commit("authRequest");
             axios({
-                url: `${process.env.VUE_APP_URL}/auth/login`,
+                url: `/api/auth/login`,
                 data: user,
                 method: "POST",
             })
@@ -42,7 +42,7 @@ export const authActions: ActionTree<AuthState, RootState> = {
         return new Promise((resolve, reject) => {
             commit("authRequest");
             axios({
-                url: `${process.env.VUE_APP_URL}/user/registration`,
+                url: `/api/user/registration`,
                 data: user,
                 method: "POST",
             })
@@ -65,7 +65,7 @@ export const authActions: ActionTree<AuthState, RootState> = {
     getCurrentUser({ commit }) {
         if (this.getters.isLoggedIn) {
             axios({
-                url: `${process.env.VUE_APP_URL}/user`,
+                url: `/api/user`,
                 method: "GET",
             })
                 .then((response) => {

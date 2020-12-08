@@ -67,10 +67,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { ACLRule } from "../../api/dist/src/roles/acl.rules";
 import HelloWorld from "./components/HelloWorld.vue";
 import { User } from "./store/auth/auth.types";
 import AccessControl from "./components/AccessControl.vue";
+import { ACLRule } from "shared";
 
 @Component({
     components: { HelloWorld, AccessControl },
