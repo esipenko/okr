@@ -14,9 +14,10 @@ In this repository there are two worksapces:
 * shared - shared code. ACL, dto etc
 
 # Shared
+Before building other projects run the following commands from the root
+
 ```
-cd ./packages/shared
-yarn run build
+yarn install
 ```
 
 # UI
