@@ -6,7 +6,8 @@
   "types": "./dist/index.d.ts",
 
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "preinstall": "yarn build"
   },
   "author": "",
   "license": "ISC",

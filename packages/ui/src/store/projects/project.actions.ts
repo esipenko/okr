@@ -8,7 +8,7 @@ import { User } from "../auth/auth.types";
 export const projectActions: ActionTree<ProjectState, RootState> = {
     getProjects({ commit }) {
         axios({
-            url: `${process.env.VUE_APP_URL}/project`,
+            url: `/api/project`,
             method: "GET",
         }).then((response) => {
             const payload: ProjectDto[] = response && response.data;
@@ -17,7 +17,7 @@ export const projectActions: ActionTree<ProjectState, RootState> = {
     },
     addProject({ commit }, project) {
         axios({
-            url: `${process.env.VUE_APP_URL}/project`,
+            url: `/api/project`,
             data: project,
             method: "post",
         }).then((response) => {
@@ -27,7 +27,7 @@ export const projectActions: ActionTree<ProjectState, RootState> = {
     },
     deleteUserFromProject({ commit }, { projectId, userId }) {
         axios({
-            url: `${process.env.VUE_APP_URL}/project/${projectId}/delete-user/${userId}`,
+            url: `/api/project/${projectId}/delete-user/${userId}`,
             method: "DELETE",
         }).then((response) => {
             commit("deleteUserFromProject", { projectId, userId });
@@ -35,7 +35,7 @@ export const projectActions: ActionTree<ProjectState, RootState> = {
     },
     deleteProject({ commit }, project) {
         axios({
-            url: `${process.env.VUE_APP_URL}/project/${project.projectId}`,
+            url: `/api/project/${project.projectId}`,
             method: "DELETE",
         }).then((response) => {
             commit("deleteProject", project);
@@ -43,7 +43,7 @@ export const projectActions: ActionTree<ProjectState, RootState> = {
     },
     editProject({ commit }, project) {
         axios({
-            url: `${process.env.VUE_APP_URL}/project/${project.projectId}`,
+            url: `/api/project/${project.projectId}`,
             data: project,
             method: "put",
         }).then((response) => {
@@ -52,7 +52,7 @@ export const projectActions: ActionTree<ProjectState, RootState> = {
     },
     setProjectUsers({ commit }, project) {
         return axios({
-            url: `${process.env.VUE_APP_URL}/project/${project.projectId}/users`,
+            url: `/api/project/${project.projectId}/users`,
             method: "GET",
         }).then((response) => {
             const users: User[] = response && response.data;

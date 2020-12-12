@@ -4,7 +4,7 @@ import { ACLRule } from 'shared';
 
 export class DefaultRoles1603903430415 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.connection
+        await queryRunner.manager
             .createQueryBuilder()
             .insert()
             .into('role')

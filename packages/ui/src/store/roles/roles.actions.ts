@@ -3,13 +3,12 @@ import axios from "axios";
 import { Role, RolesState } from "./roles.types";
 import { RootState } from "../root.types";
 import { User } from "../auth/auth.types";
-// import router from "../../router";
 
 export const rolesActions: ActionTree<RolesState, RootState> = {
     getRoles({ commit }) {
         commit("rolesRequest");
         axios({
-            url: `${process.env.VUE_APP_URL}/role`,
+            url: `/api/role`,
             method: "get",
         }).then((response) => {
             const payload: Role = response && response.data;
@@ -18,7 +17,7 @@ export const rolesActions: ActionTree<RolesState, RootState> = {
     },
     assignRole({ commit }, { roleId, userId }) {
         axios({
-            url: `${process.env.VUE_APP_URL}/role/${roleId}/assign/${userId}`,
+            url: `/api/role/${roleId}/assign/${userId}`,
             method: "post",
         }).then((response) => {
             const payload: User = response && response.data;
@@ -27,7 +26,7 @@ export const rolesActions: ActionTree<RolesState, RootState> = {
     },
     createRole({ commit }, role) {
         axios({
-            url: `${process.env.VUE_APP_URL}/role`,
+            url: `/api/role`,
             method: "post",
             data: role,
         }).then((response) => {
@@ -37,7 +36,7 @@ export const rolesActions: ActionTree<RolesState, RootState> = {
     },
     deleteRole({ commit }, role) {
         axios({
-            url: `${process.env.VUE_APP_URL}/role/${role.roleId}`,
+            url: `/api/role/${role.roleId}`,
             method: "delete",
         }).then((response) => {
             const payload: Role = response && response.data;
@@ -46,7 +45,7 @@ export const rolesActions: ActionTree<RolesState, RootState> = {
     },
     editRole({ commit }, role) {
         axios({
-            url: `${process.env.VUE_APP_URL}/role`,
+            url: `/api/role`,
             method: "put",
             data: role,
         }).then((response) => {

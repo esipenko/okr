@@ -9,5 +9,11 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "shared": "yarn workspace shared build",
+    "api:dev": "yarn workspace api start:dev",
+    "ui:dev": "yarn workspace ui serve",
+    "dev": "yarn install && yarn api:dev & yarn ui:dev"
+  }
 }
