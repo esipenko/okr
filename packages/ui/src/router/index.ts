@@ -49,7 +49,21 @@ const routes: Array<RouteConfig> = [
             rules: [ACLRule.USERS_LIST],
         },
         component: () =>
-            import(/* webpackChunkName: "about" */ "../components/Users.vue"),
+            import(
+                /* webpackChunkName: "about" */ "../components/users/Users.vue"
+            ),
+    },
+    {
+        path: "/users-wrapper",
+        name: "Users wrapper",
+        meta: {
+            requiresAuth: true,
+            rules: [ACLRule.USERS_LIST],
+        },
+        component: () =>
+            import(
+                /* webpackChunkName: "about" */ "../components/users/UsersWrapper.vue"
+            ),
     },
     {
         path: "/roles",
