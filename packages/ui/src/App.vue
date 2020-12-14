@@ -53,11 +53,7 @@
         <v-content>
             <v-container fluid>
                 <v-slide-y-transition mode="out-in">
-                    <v-layout column align-center>
-                        <v-sheet min-width="80vw" rounded>
-                            <router-view></router-view>
-                        </v-sheet>
-                    </v-layout>
+                    <router-view></router-view>
                 </v-slide-y-transition>
             </v-container>
         </v-content>
@@ -72,8 +68,9 @@ import { User } from "./store/auth/auth.types";
 import AccessControl from "./components/AccessControl.vue";
 import { ACLRule } from "shared";
 
+Vue.component("AccessControl", AccessControl);
 @Component({
-    components: { HelloWorld, AccessControl },
+    components: { HelloWorld },
 })
 export default class App extends Vue {
     @Getter("isLoggedIn")
@@ -98,6 +95,7 @@ export default class App extends Vue {
         { rules: [], title: "Home", to: "/" },
         { rules: [], title: "Projects", to: "/projects" },
         { rules: [], title: "Users", to: "/users" },
+        { rules: [], title: "Users wrapper", to: "/users-wrapper" },
         { rules: [ACLRule.ROLES_LIST], title: "Roles", to: "/roles" },
     ];
 }

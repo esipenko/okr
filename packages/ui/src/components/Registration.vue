@@ -1,7 +1,7 @@
 <template>
     <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" xs="12" sm="4" md="4" lg="3">
                 <v-card class="elevation-12">
                     <v-toolbar color="primary" dark flat>
                         <v-toolbar-title>Registration form</v-toolbar-title>
@@ -72,7 +72,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Action } from "vuex-class";
 
-@Component({})
+@Component
 export default class Register extends Vue {
     @Action("registration")
     registration: any;
@@ -103,7 +103,7 @@ export default class Register extends Vue {
     ];
 
     goToLogin() {
-        this.$router.push("/login");
+        this["$router"].push("/login");
     }
 
     submit() {
@@ -120,7 +120,7 @@ export default class Register extends Vue {
         };
 
         this.registration(data)
-            .then(() => this.$router.push("/login"))
+            .then(() => this["$router"].push("/login"))
             .catch((err: any) => {
                 this.errorMessage = err.message;
             });
