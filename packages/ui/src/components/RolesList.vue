@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Roles</h1>
         <v-list v-if="roles.length > 0">
             <v-list-group v-for="role in roles" :key="role.roleId" no-action>
                 <template v-slot:activator>

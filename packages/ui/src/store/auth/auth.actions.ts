@@ -70,7 +70,7 @@ export const authActions: ActionTree<AuthState, RootState> = {
             })
                 .then((response) => {
                     const user: User = response && response.data;
-                    commit("updateUser", user);
+                    commit("updateCurrentUser", user);
                 })
                 .catch((err) => {
                     this.dispatch("logout");

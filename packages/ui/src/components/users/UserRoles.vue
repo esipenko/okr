@@ -1,10 +1,11 @@
 <template>
     <v-select
-        v-if="rules.includes(ACLRule.ROLES_ASSIGN)"
+        v-if="canEditRole"
         :value="item.role.roleId"
         item-text="name"
         item-value="roleId"
-        :items="roles"
+        :items="availableRoles"
+        class="user-role-input"
         @input="
             assignRole({
                 userId: item.userId,
@@ -19,6 +20,7 @@
 
 <script lang="ts">
 import { ACLRule } from "shared";
+import { DefaultRoles } from "shared/dist/acl.rules";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import { User } from "../../store/auth/auth.types";
@@ -31,23 +33,37 @@ export default class UserRoles extends Vue {
     @Getter("roles") roles!: Role[];
     @Action("assignRole") assignRole: any;
 
-    ACLRule = ACLRule;
     get rules(): ACLRule[] {
         if (this.currentUser === undefined) {
             return [];
         }
 
-        // const actionRules = [ACLRule.USERS_EDIT, ACLRule.USERS_DELETE];
-
         const rules = this.currentUser.role.rules;
-        // const hideActions =
-        //     rules.filter((r) => actionRules.includes(r)).length === 0;
-
-        // if (hideActions) {
-        //     this.$set(this.headers[4], "align", " d-none");
-        // }
-
         return rules;
+    }
+
+    get canEditRole() {
+        return this.rules.includes(ACLRule.ROLES_ASSIGN);
+    }
+
+    get availableRoles() {
+        const isAdmin =
+            this.currentUser.userId === this.item.userId &&
+            this.item.role.name === DefaultRoles.Administrator;
+
+        if (isAdmin) {
+            return this.roles.filter(
+                (r) => r.name === DefaultRoles.Administrator
+            );
+        }
+
+        return this.roles;
     }
 }
 </script>
+
+<style scoped lang="scss">
+.user-role-input {
+    max-width: 150px;
+}
+</style>

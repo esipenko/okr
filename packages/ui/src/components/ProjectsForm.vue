@@ -3,20 +3,11 @@
         <v-dialog v-model="dialog" width="500">
             <template v-slot:activator="{ on, attrs }">
                 <access-control :accessRoles="[ACLRule.PROJECTS_CREATE]">
-                    <v-btn
-                        color="rgba(14, 187, 218, 1)"
-                        fab
-                        large
-                        dark
-                        bottom
-                        right
-                        class="add-project-btn"
+                    <OpenFormButton
                         v-bind="attrs"
                         @click.native="dialog = true"
                         v-on="on"
-                    >
-                        <v-icon>mdi-plus-outline</v-icon>
-                    </v-btn>
+                    />
                 </access-control>
             </template>
 
@@ -82,9 +73,10 @@ import { intersectionWith } from "lodash";
 import { ProjectDto } from "../store/projects/project.types";
 import AccessControl from "./AccessControl.vue";
 import { ACLRule } from "shared";
+import OpenFormButton from "./OpenFormButton.vue";
 
 @Component({
-    components: { AccessControl },
+    components: { AccessControl, OpenFormButton },
 })
 export default class ProjectForm extends Vue {
     @Ref("form") from: any;
@@ -158,11 +150,3 @@ export default class ProjectForm extends Vue {
     }
 }
 </script>
-
-<style>
-.add-project-btn {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-}
-</style>

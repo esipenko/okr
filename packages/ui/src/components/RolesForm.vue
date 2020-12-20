@@ -3,20 +3,11 @@
         <v-dialog v-model="dialog" width="500">
             <template v-slot:activator="{ on, attrs }">
                 <access-control :accessRoles="[ACLRule.ROLES_CREATE]">
-                    <v-btn
-                        color="rgba(14, 187, 218, 1)"
-                        fab
-                        large
-                        dark
-                        bottom
-                        right
-                        class="add-project-btn"
+                    <OpenFormButton
                         v-bind="attrs"
                         @click.native="dialog = true"
                         v-on="on"
-                    >
-                        <v-icon>mdi-plus-outline</v-icon>
-                    </v-btn>
+                    />
                 </access-control>
             </template>
 
@@ -80,9 +71,10 @@ import AccessControl from "./AccessControl.vue";
 import { ACLRule } from "shared";
 import { Role } from "../store/roles/roles.types";
 import { Action } from "vuex-class";
+import OpenFormButton from "./OpenFormButton.vue";
 
 @Component({
-    components: { AccessControl },
+    components: { AccessControl, OpenFormButton },
 })
 export default class RolesForm extends Vue {
     @Ref("form") from: any;
@@ -141,11 +133,3 @@ export default class RolesForm extends Vue {
     }
 }
 </script>
-
-<style>
-.add-project-btn {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-}
-</style>

@@ -19,7 +19,7 @@
 <script lang="ts">
 import { ACLRule } from "shared";
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Action, Getter } from "vuex-class";
 import { User } from "../../store/auth/auth.types";
 import { Role } from "../../store/roles/roles.types";
 
@@ -27,16 +27,13 @@ import { Role } from "../../store/roles/roles.types";
 export default class UsersActions extends Vue {
     @Getter("roles") roles!: Role;
     @Getter("user") currentUser!: User;
+    @Action("deleteUser") deleteUser: any;
     @Prop({ default: () => {} }) item!: User;
 
     ACLRule: any = ACLRule;
 
     editUser(user: User) {
-        console.log(user);
-    }
-
-    deleteUser(id: number) {
-        console.log(id);
+        this.$emit("edit-user", user);
     }
 }
 </script>

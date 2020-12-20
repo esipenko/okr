@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Projects</h1>
         <v-list v-if="projects.length > 0">
             <v-list-group
                 v-for="project in projects"

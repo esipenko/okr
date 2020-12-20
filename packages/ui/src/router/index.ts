@@ -29,13 +29,13 @@ const routes: Array<RouteConfig> = [
     },
     {
         path: "/login",
-        name: "login",
+        name: "Login",
         component: () =>
             import(/* webpackChunkName: "about" */ "../components/Login.vue"),
     },
     {
         path: "/registration",
-        name: "registration",
+        name: "Registration",
         component: () =>
             import(
                 /* webpackChunkName: "about" */ "../components/Registration.vue"
@@ -43,7 +43,7 @@ const routes: Array<RouteConfig> = [
     },
     {
         path: "/users",
-        name: "users",
+        name: "Users",
         meta: {
             requiresAuth: true,
             rules: [ACLRule.USERS_LIST],
@@ -54,20 +54,8 @@ const routes: Array<RouteConfig> = [
             ),
     },
     {
-        path: "/users-wrapper",
-        name: "Users wrapper",
-        meta: {
-            requiresAuth: true,
-            rules: [ACLRule.USERS_LIST],
-        },
-        component: () =>
-            import(
-                /* webpackChunkName: "about" */ "../components/users/UsersWrapper.vue"
-            ),
-    },
-    {
         path: "/roles",
-        name: "roles",
+        name: "Roles",
         meta: {
             requiresAuth: true,
             rules: [ACLRule.ROLES_LIST],

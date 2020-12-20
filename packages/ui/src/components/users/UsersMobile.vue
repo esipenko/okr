@@ -1,60 +1,55 @@
 <template>
-    <v-container fluid>
-        <v-data-iterator :items="users" hide-default-footer hide-default-header>
-            <template v-slot:header>
-                <v-toolbar flat>
-                    <v-toolbar-title>Users</v-toolbar-title>
-                </v-toolbar>
-            </template>
+    <v-data-iterator :items="users" hide-default-footer hide-default-header>
+        <template v-slot:default="props">
+            <v-row>
+                <v-col
+                    v-for="item in props.items"
+                    :key="item.name"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                    lg="3"
+                >
+                    <v-card>
+                        <v-card-title class="subheading font-weight-bold">
+                            {{ item.firstName + " " + item.lastName }}
+                        </v-card-title>
 
-            <template v-slot:default="props">
-                <v-row>
-                    <v-col
-                        v-for="item in props.items"
-                        :key="item.name"
-                        cols="12"
-                        sm="6"
-                        md="4"
-                        lg="3"
-                    >
-                        <v-card>
-                            <v-card-title class="subheading font-weight-bold">
-                                {{ item.firstName + " " + item.lastName }}
-                            </v-card-title>
+                        <v-divider></v-divider>
 
+                        <v-list dense>
+                            <v-list-item>
+                                <v-list-item-content>
+                                    Email:
+                                </v-list-item-content>
+                                <v-list-item-content class="align-end data">
+                                    {{ item.email }}
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-list-item-content>
+                                    Role:
+                                </v-list-item-content>
+                                <v-list-item-content class="align-end data">
+                                    <user-roles :item="item" />
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list>
+                        <template v-if="showActions">
                             <v-divider></v-divider>
 
-                            <v-list dense>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        Email:
-                                    </v-list-item-content>
-                                    <v-list-item-content class="align-end data">
-                                        {{ item.email }}
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        Role:
-                                    </v-list-item-content>
-                                    <v-list-item-content class="align-end data">
-                                        <user-roles :item="item" />
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list>
-                            <template v-if="showActions">
-                                <v-divider></v-divider>
-
-                                <v-card-actions class="justify-end">
-                                    <users-actions :item="item" />
-                                </v-card-actions>
-                            </template>
-                        </v-card>
-                    </v-col>
-                </v-row>
-            </template>
-        </v-data-iterator>
-    </v-container>
+                            <v-card-actions class="justify-end">
+                                <users-actions
+                                    :item="item"
+                                    @edit-user="$emit('edit-user', $event)"
+                                />
+                            </v-card-actions>
+                        </template>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </template>
+    </v-data-iterator>
 </template>
 
 <script lang="ts">

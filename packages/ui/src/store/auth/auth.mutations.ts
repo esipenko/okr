@@ -18,7 +18,7 @@ export const authMutations: MutationTree<AuthState> = {
         state.token = payload.token.accessToken;
         state.user = payload.user;
     },
-    updateUser(state, user: User) {
+    updateCurrentUser(state, user: User) {
         state.user = user;
     },
 };

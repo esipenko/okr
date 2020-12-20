@@ -77,7 +77,7 @@ export default class Login extends Vue {
         this.login({ email, password })
             .then(() => this["$router"].push("/"))
             .catch((err: any) => {
-                this.errorMessage = err.messagea;
+                this.errorMessage = "Check your email or password";
             });
     }
 

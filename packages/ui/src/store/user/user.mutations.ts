@@ -1,6 +1,7 @@
 import { MutationTree } from "vuex";
 import { User } from "../auth/auth.types";
 import { UserState } from "./user.store";
+import Vue from "vue";
 
 export const userMutations: MutationTree<UserState> = {
     setUsers(state, users: User[]) {
@@ -27,5 +28,18 @@ export const userMutations: MutationTree<UserState> = {
         const newUsers = state.users.filter((u) => u.userId !== user.userId);
 
         state.users = [...newUsers];
+    },
+    updateUser(state, user: User) {
+        if (state.users === undefined) {
+            return;
+        }
+
+        const idx = state.users.findIndex((u) => u.userId == user.userId);
+
+        if (idx === -1) {
+            return;
+        }
+
+        Vue.set(state.users, idx, user);
     },
 };

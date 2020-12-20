@@ -36,6 +36,7 @@
                 v-if="isLoggedIn"
                 @click.stop="drawer = !drawer"
             ></v-app-bar-nav-icon>
+            <v-toolbar-title> {{ currentRoute }} </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
@@ -83,11 +84,15 @@ export default class App extends Vue {
     getCurrentUser: any;
     @Getter("user")
     user!: User;
+    @Action("updateIsMobile")
+    updateIsMobile: any;
 
     mounted(): void {
         if (this.isLoggedIn && !this.user) {
             this.getCurrentUser();
         }
+
+        window.addEventListener("resize", this.updateIsMobile);
     }
 
     drawer = true;
@@ -95,9 +100,16 @@ export default class App extends Vue {
         { rules: [], title: "Home", to: "/" },
         { rules: [], title: "Projects", to: "/projects" },
         { rules: [], title: "Users", to: "/users" },
-        { rules: [], title: "Users wrapper", to: "/users-wrapper" },
         { rules: [ACLRule.ROLES_LIST], title: "Roles", to: "/roles" },
     ];
+
+    beforeDestory() {
+        window.removeEventListener("resize", this.updateIsMobile);
+    }
+
+    get currentRoute() {
+        return this["$route"].name;
+    }
 }
 </script>
 
