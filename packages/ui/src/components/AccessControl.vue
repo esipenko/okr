@@ -8,6 +8,7 @@
 import { ACLRule } from "shared";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Getter } from "vuex-class";
+
 @Component
 export default class AccessControll extends Vue {
     @Prop({ default: () => [] })
@@ -18,8 +19,7 @@ export default class AccessControll extends Vue {
     get hasRole(): boolean {
         return (
             this.accessRoles.length === 0 ||
-            this.accessRoles.filter((r) => this.userRoles.includes(r))
-                .length !== 0
+            this.accessRoles.some((r) => this.userRoles.includes(r))
         );
     }
 }

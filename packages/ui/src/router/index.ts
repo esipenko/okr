@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "../components/Home.vue";
 import store from "../store";
 import { ACLRule } from "shared";
 
@@ -24,7 +24,7 @@ const routes: Array<RouteConfig> = [
         },
         component: () =>
             import(
-                /* webpackChunkName: "about" */ "../components/Projects.vue"
+                /* webpackChunkName: "about" */ "../components/projects/Projects.vue"
             ),
     },
     {
@@ -62,7 +62,7 @@ const routes: Array<RouteConfig> = [
         },
         component: () =>
             import(
-                /* webpackChunkName: "about" */ "../components/RolesList.vue"
+                /* webpackChunkName: "about" */ "../components/roles/RolesList.vue"
             ),
     },
 ];

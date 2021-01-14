@@ -44,7 +44,7 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard(), RoleGuard)
-    @RoleControl(ACLRule.USERS_LIST)
+    @RoleControl(ACLRule.USERS_DELETE)
     @Delete('/:user_id')
     async deleteUserById(@Param('user_id') userId: number): Promise<UserDto> {
         const userEntity = await this.userService.deleteUserByUserId(userId);
@@ -52,7 +52,7 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard(), RoleGuard)
-    @RoleControl(ACLRule.USERS_LIST)
+    @RoleControl(ACLRule.USERS_EDIT)
     @Put()
     async editUser(@Body() userDto: UserDto): Promise<UserDto> {
         const userEntity = await this.userService.updateUser(userDto);

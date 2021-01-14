@@ -22,8 +22,12 @@
                                 <v-list-item-content>
                                     Email:
                                 </v-list-item-content>
-                                <v-list-item-content class="align-end data">
-                                    {{ item.email }}
+                                <v-list-item-content
+                                    class="align-end email data"
+                                >
+                                    <div class="email">
+                                        {{ item.email }}
+                                    </div>
                                 </v-list-item-content>
                             </v-list-item>
                             <v-list-item>
@@ -31,7 +35,13 @@
                                     Role:
                                 </v-list-item-content>
                                 <v-list-item-content class="align-end data">
-                                    <user-roles :item="item" />
+                                    <user-roles
+                                        :ref="item.userId"
+                                        :item="item"
+                                        @update-role="
+                                            $emit('update-role', $event)
+                                        "
+                                    />
                                 </v-list-item-content>
                             </v-list-item>
                         </v-list>
@@ -42,6 +52,7 @@
                                 <users-actions
                                     :item="item"
                                     @edit-user="$emit('edit-user', $event)"
+                                    @delete-user="$emit('delete-user', $evet)"
                                 />
                             </v-card-actions>
                         </template>
@@ -74,7 +85,25 @@ export default class UsersMobile extends Vue {
     get showActions() {
         const actionRules = [ACLRule.USERS_EDIT, ACLRule.USERS_DELETE];
         const rules = this.currentUser.role.rules;
-        return rules.filter((r) => actionRules.includes(r)).length !== 0;
+        return rules.some((r) => actionRules.includes(r));
+    }
+
+    discardRoleAssign(user: User) {
+        (this.$refs[user.userId] as UserRoles[])[0].discard(user);
     }
 }
 </script>
+
+<style scoped>
+.email {
+    flex-basis: 60%;
+    text-overflow: ellipsis;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.data {
+    justify-content: flex-end;
+}
+</style>

@@ -8,11 +8,16 @@
         :mobile-breakpoint="0"
     >
         <template v-slot:[`item.role`]="{ item }">
-            <user-roles :item="item" />
+            <user-roles
+                :ref="item.userId"
+                :item="item"
+                @update-role="$emit('update-role', $event)"
+            />
         </template>
         <template v-slot:[`item.actions`]="{ item }">
             <users-actions
                 :item="item"
+                @delete-user="$emit('delete-user', $event)"
                 @edit-user="$emit('edit-user', $event)"
             />
         </template>
@@ -71,12 +76,15 @@ export default class UsersDesktop extends Vue {
         const actionRules = [ACLRule.USERS_EDIT, ACLRule.USERS_DELETE];
 
         const rules = this.currentUser.role.rules;
-        const hideActions =
-            rules.filter((r) => actionRules.includes(r)).length === 0;
+        const showActions = rules.some((r) => actionRules.includes(r));
 
-        if (hideActions) {
+        if (!showActions) {
             this.$set(this.headers[4], "align", " d-none");
         }
+    }
+
+    discardRoleAssign(user: User) {
+        (this.$refs[user.userId] as UserRoles).discard(user);
     }
 }
 </script>

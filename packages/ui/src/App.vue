@@ -64,14 +64,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import HelloWorld from "./components/HelloWorld.vue";
+import Home from "./components/Home.vue";
 import { User } from "./store/auth/auth.types";
 import AccessControl from "./components/AccessControl.vue";
 import { ACLRule } from "shared";
 
 Vue.component("AccessControl", AccessControl);
 @Component({
-    components: { HelloWorld },
+    components: { Home },
 })
 export default class App extends Vue {
     @Getter("isLoggedIn")

@@ -1,17 +1,12 @@
 <template>
     <v-select
         v-if="canEditRole"
-        :value="item.role.roleId"
+        :value="input"
         item-text="name"
         item-value="roleId"
         :items="availableRoles"
         class="user-role-input"
-        @input="
-            assignRole({
-                userId: item.userId,
-                roleId: $event,
-            })
-        "
+        @change="updateRole(item, $event)"
     ></v-select>
     <span v-else>
         {{ item.role.name }}
@@ -21,7 +16,7 @@
 <script lang="ts">
 import { ACLRule } from "shared";
 import { DefaultRoles } from "shared/dist/acl.rules";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 import { User } from "../../store/auth/auth.types";
 import { Role } from "../../store/roles/roles.types";
@@ -32,6 +27,8 @@ export default class UserRoles extends Vue {
     @Getter("user") currentUser!: User;
     @Getter("roles") roles!: Role[];
     @Action("assignRole") assignRole: any;
+    value = {} as Role;
+    input = {} as Role;
 
     get rules(): ACLRule[] {
         if (this.currentUser === undefined) {
@@ -58,6 +55,26 @@ export default class UserRoles extends Vue {
         }
 
         return this.roles;
+    }
+
+    updateRole(user: User, roleId: number) {
+        if (user.role.roleId === roleId) {
+            return;
+        }
+
+        this.$emit("update-role", {
+            user,
+            roleId,
+        });
+    }
+
+    @Watch("item", { immediate: true })
+    onUserChange() {
+        this.input = { ...this.item.role };
+    }
+
+    discard(user: User) {
+        this.input = { ...user.role };
     }
 }
 </script>

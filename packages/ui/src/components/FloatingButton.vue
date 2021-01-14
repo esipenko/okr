@@ -6,10 +6,11 @@
         dark
         bottom
         right
-        class="open-form-button"
-        @click.native="dialog = true"
+        class="floating-button"
     >
-        <v-icon>mdi-plus-outline</v-icon>
+        <slot>
+            <v-icon>mdi-plus-outline</v-icon>
+        </slot>
     </v-btn>
 </template>
 
@@ -17,11 +18,11 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class OpenFormButton extends Vue {}
+export default class FloatingButton extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-.open-form-button {
+.floating-button {
     position: fixed;
     right: 16px;
     bottom: 16px;

@@ -1,7 +1,7 @@
 import { User } from "../auth/auth.types";
 
 export interface ProjectDto {
-    projectId: number;
+    projectId?: number;
     companyId: number;
     name: string;
     users: User[];
