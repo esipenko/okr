@@ -36,6 +36,7 @@
                 v-if="isLoggedIn"
                 @click.stop="drawer = !drawer"
             ></v-app-bar-nav-icon>
+            <v-toolbar-title> {{ currentRoute }} </v-toolbar-title>
 
             <v-spacer></v-spacer>
 
@@ -53,11 +54,7 @@
         <v-content>
             <v-container fluid>
                 <v-slide-y-transition mode="out-in">
-                    <v-layout column align-center>
-                        <v-sheet min-width="80vw" rounded>
-                            <router-view></router-view>
-                        </v-sheet>
-                    </v-layout>
+                    <router-view></router-view>
                 </v-slide-y-transition>
             </v-container>
         </v-content>
@@ -67,13 +64,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import HelloWorld from "./components/HelloWorld.vue";
+import Home from "./components/Home.vue";
 import { User } from "./store/auth/auth.types";
 import AccessControl from "./components/AccessControl.vue";
 import { ACLRule } from "shared";
 
+Vue.component("AccessControl", AccessControl);
 @Component({
-    components: { HelloWorld, AccessControl },
+    components: { Home },
 })
 export default class App extends Vue {
     @Getter("isLoggedIn")
@@ -86,11 +84,15 @@ export default class App extends Vue {
     getCurrentUser: any;
     @Getter("user")
     user!: User;
+    @Action("updateIsMobile")
+    updateIsMobile: any;
 
     mounted(): void {
         if (this.isLoggedIn && !this.user) {
             this.getCurrentUser();
         }
+
+        window.addEventListener("resize", this.updateIsMobile);
     }
 
     drawer = true;
@@ -100,6 +102,14 @@ export default class App extends Vue {
         { rules: [], title: "Users", to: "/users" },
         { rules: [ACLRule.ROLES_LIST], title: "Roles", to: "/roles" },
     ];
+
+    beforeDestory() {
+        window.removeEventListener("resize", this.updateIsMobile);
+    }
+
+    get currentRoute() {
+        return this["$route"].name;
+    }
 }
 </script>
 

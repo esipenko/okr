@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Projects</h1>
         <v-list v-if="projects.length > 0">
             <v-list-group
                 v-for="project in projects"
@@ -55,7 +54,7 @@
             Currently your company don't have any project. Create your first
             one!
         </p>
-
+        <FloatingButton @click.native="projectForm.openForm()" />
         <ProjectsForm
             ref="projectForm"
             @add-project="addProject"
@@ -68,12 +67,13 @@
 import { Component, Ref, Vue } from "vue-property-decorator";
 import ProjectsForm from "./ProjectsForm.vue";
 import { Action, Getter } from "vuex-class";
-import { ProjectDto } from "../store/projects/project.types";
-import AccessControl from "./AccessControl.vue";
+import { ProjectDto } from "../../store/projects/project.types";
+import AccessControl from "../AccessControl.vue";
 import { ACLRule } from "shared";
+import FloatingButton from "../FloatingButton.vue";
 
 @Component({
-    components: { ProjectsForm, AccessControl },
+    components: { ProjectsForm, AccessControl, FloatingButton },
 })
 export default class Projects extends Vue {
     @Action("getProjects") getProjects: any;
@@ -91,7 +91,7 @@ export default class Projects extends Vue {
     }
 
     openEditProjectForm(project: ProjectDto) {
-        this.projectForm.openEditForm(project);
+        this.projectForm.openForm(project);
     }
 
     getProjectUsers(project: ProjectDto) {

@@ -6,6 +6,7 @@ import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import * as crypto from 'crypto';
 import { EmailAlreadyExistsError } from './errors';
 import { DefaultRoles } from 'src/roles/acl.rules';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -79,5 +80,11 @@ export class UserService {
         const userEntity = await this.userRepository.findOneOrFail({ userId });
         userEntity.isEnabled = false;
         return await this.userRepository.save(userEntity);
+    }
+
+    async updateUser(user: UserDto): Promise<UserEntity> {
+        const { userId } = user;
+        const userEntity = await this.userRepository.findOneOrFail({ userId });
+        return await this.userRepository.save({ userEntity, ...user });
     }
 }

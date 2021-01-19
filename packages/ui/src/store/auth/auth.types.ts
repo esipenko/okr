@@ -11,6 +11,8 @@ export interface User {
     userId: number;
     company: Company;
     role: {
+        roleId: number;
+        name: string;
         rules: ACLRule[];
     };
 }

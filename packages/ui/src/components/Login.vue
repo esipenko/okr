@@ -1,7 +1,7 @@
 <template>
     <v-container class="fill-height" fluid align-center>
         <v-row align="center" justify="center">
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" xs="12" sm="8" md="4" lg="4">
                 <v-card class="elevation-12">
                     <v-toolbar color="primary" dark flat>
                         <v-toolbar-title>Login form</v-toolbar-title>
@@ -75,14 +75,14 @@ export default class Login extends Vue {
         const { email, password } = this;
 
         this.login({ email, password })
-            .then(() => this.$router.push("/"))
+            .then(() => this["$router"].push("/"))
             .catch((err: any) => {
-                this.errorMessage = err.messagea;
+                this.errorMessage = "Check your email or password";
             });
     }
 
     goToRegistration(): void {
-        this.$router.push("/registration");
+        this["$router"].push("/registration");
     }
 }
 </script>

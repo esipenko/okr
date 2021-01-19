@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Roles</h1>
         <v-list v-if="roles.length > 0">
             <v-list-group v-for="role in roles" :key="role.roleId" no-action>
                 <template v-slot:activator>
@@ -37,6 +36,7 @@
             Currently your company don't have any role. Create your first one!
         </p>
         <RolesForm ref="rolesForm" />
+        <FloatingButton @click.native="rolesForm.openForm()" />
     </div>
 </template>
 
@@ -44,12 +44,13 @@
 import { ACLRule } from "shared";
 import { Component, Vue, Ref } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { Role } from "../store/roles/roles.types";
-import AccessControl from "./AccessControl.vue";
+import { Role } from "../../store/roles/roles.types";
+import AccessControl from "../AccessControl.vue";
 import RolesForm from "./RolesForm.vue";
+import FloatingButton from "../FloatingButton.vue";
 
 @Component({
-    components: { AccessControl, RolesForm },
+    components: { AccessControl, RolesForm, FloatingButton },
 })
 export default class RolesLits extends Vue {
     @Action("getRoles") getRoles: any;
@@ -66,7 +67,7 @@ export default class RolesLits extends Vue {
     }
 
     openEditRole(role: Role) {
-        this.rolesForm.openEditForm(role);
+        this.rolesForm.openForm(role);
     }
 }
 </script>

@@ -1,25 +1,30 @@
 <template>
-    <div class="text-center">
+    <form-modal
+        :title="isNewProject ? 'New project' : 'Edit project'"
+        :action="isNewProject ? 'save' : 'edit'"
+        :dialog="dialog"
+        @submit="submit"
+        @cancel="close"
+    >
+        <v-form ref="form" lazy-validation>
+            <v-text-field
+                v-model="projectName"
+                :rules="projectRule"
+                label="Project name"
+                required
+            ></v-text-field>
+            <v-checkbox
+                v-for="user in users"
+                :key="user.userId"
+                v-model="selectedUsers"
+                :label="user.firstName + ' ' + user.lastName"
+                :value="user"
+            ></v-checkbox>
+        </v-form>
+    </form-modal>
+    <!-- <div class="text-center">
+        
         <v-dialog v-model="dialog" width="500">
-            <template v-slot:activator="{ on, attrs }">
-                <access-control :accessRoles="[ACLRule.PROJECTS_CREATE]">
-                    <v-btn
-                        color="rgba(14, 187, 218, 1)"
-                        fab
-                        large
-                        dark
-                        bottom
-                        right
-                        class="add-project-btn"
-                        v-bind="attrs"
-                        @click.native="dialog = true"
-                        v-on="on"
-                    >
-                        <v-icon>mdi-plus-outline</v-icon>
-                    </v-btn>
-                </access-control>
-            </template>
-
             <v-card>
                 <v-card-title
                     v-if="project.name === undefined"
@@ -34,21 +39,7 @@
                 <v-divider></v-divider>
 
                 <v-card-text>
-                    <v-form ref="form" lazy-validation>
-                        <v-text-field
-                            v-model="projectName"
-                            :rules="projectRule"
-                            label="Project name"
-                            required
-                        ></v-text-field>
-                        <v-checkbox
-                            v-for="user in users"
-                            :key="user.userId"
-                            v-model="selectedUsers"
-                            :label="user.firstName + ' ' + user.lastName"
-                            :value="user"
-                        ></v-checkbox>
-                    </v-form>
+
                 </v-card-text>
 
                 <v-divider></v-divider>
@@ -69,22 +60,22 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
-    </div>
+        </v-dialog> -->
 </template>
 
 <script lang="ts">
 import { Component, Ref, Vue } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
-import { User } from "../store/auth/auth.types";
-import { Project } from "../utils/test-data/project";
+import { User } from "../../store/auth/auth.types";
 import { intersectionWith } from "lodash";
-import { ProjectDto } from "../store/projects/project.types";
-import AccessControl from "./AccessControl.vue";
+import { ProjectDto } from "../../store/projects/project.types";
+import AccessControl from "../AccessControl.vue";
 import { ACLRule } from "shared";
+import FloatingButton from "../FloatingButton.vue";
+import FormModal from "../FormModal.vue";
 
 @Component({
-    components: { AccessControl },
+    components: { AccessControl, FloatingButton, FormModal },
 })
 export default class ProjectForm extends Vue {
     @Ref("form") from: any;
@@ -93,6 +84,8 @@ export default class ProjectForm extends Vue {
     @Getter("users") users!: User[];
     @Getter("projects") projects!: ProjectDto[];
     @Getter("projectUsers") projectUsers: any;
+    @Getter("currentUser") currentUser!: User;
+
     ACLRule: any = ACLRule;
 
     dialog = false;
@@ -100,10 +93,15 @@ export default class ProjectForm extends Vue {
     selectedUsers: User[] = [];
     project = {} as ProjectDto;
 
-    openEditForm(project: ProjectDto) {
+    openForm(project?: ProjectDto) {
+        this.dialog = true;
+
+        if (project === undefined) {
+            return;
+        }
+
         this.project = project;
         this.projectName = project.name;
-        this.dialog = true;
 
         if (project.users === undefined) {
             this.setProjectUsers(project).then(() => {
@@ -135,8 +133,9 @@ export default class ProjectForm extends Vue {
             return;
         }
 
-        const newProject: Project = {
+        const newProject: ProjectDto = {
             projectId: this.project.projectId,
+            companyId: this.currentUser.company.companyId,
             name: this.projectName,
             users: [...this.selectedUsers],
         };
@@ -156,13 +155,9 @@ export default class ProjectForm extends Vue {
         this.projectName = "";
         this.project = {} as ProjectDto;
     }
+
+    isNewProject() {
+        return this.project.name === undefined;
+    }
 }
 </script>
-
-<style>
-.add-project-btn {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-}
-</style>

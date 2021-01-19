@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "../components/Home.vue";
 import store from "../store";
 import { ACLRule } from "shared";
 
@@ -24,18 +24,18 @@ const routes: Array<RouteConfig> = [
         },
         component: () =>
             import(
-                /* webpackChunkName: "about" */ "../components/Projects.vue"
+                /* webpackChunkName: "about" */ "../components/projects/Projects.vue"
             ),
     },
     {
         path: "/login",
-        name: "login",
+        name: "Login",
         component: () =>
             import(/* webpackChunkName: "about" */ "../components/Login.vue"),
     },
     {
         path: "/registration",
-        name: "registration",
+        name: "Registration",
         component: () =>
             import(
                 /* webpackChunkName: "about" */ "../components/Registration.vue"
@@ -43,24 +43,26 @@ const routes: Array<RouteConfig> = [
     },
     {
         path: "/users",
-        name: "users",
+        name: "Users",
         meta: {
             requiresAuth: true,
             rules: [ACLRule.USERS_LIST],
         },
         component: () =>
-            import(/* webpackChunkName: "about" */ "../components/Users.vue"),
+            import(
+                /* webpackChunkName: "about" */ "../components/users/Users.vue"
+            ),
     },
     {
         path: "/roles",
-        name: "roles",
+        name: "Roles",
         meta: {
             requiresAuth: true,
             rules: [ACLRule.ROLES_LIST],
         },
         component: () =>
             import(
-                /* webpackChunkName: "about" */ "../components/RolesList.vue"
+                /* webpackChunkName: "about" */ "../components/roles/RolesList.vue"
             ),
     },
 ];

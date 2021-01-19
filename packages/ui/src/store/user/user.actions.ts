@@ -20,7 +20,24 @@ export const userActions: ActionTree<UserState, RootState> = {
             method: "DELETE",
         }).then((response) => {
             const payload: User = response && response.data;
-            commit("deleteUsers", payload);
+            commit("deleteUser", payload);
+        });
+    },
+    editUser({ commit, getters }, user: User) {
+        axios({
+            url: `/api/user/`,
+            method: "PUT",
+            data: user,
+        }).then((response) => {
+            const payload: User = response && response.data;
+
+            const currentUser = getters.user;
+
+            if (currentUser.userId === user.userId) {
+                commit("updateCurrentUser", payload);
+            }
+
+            commit("updateUser", payload);
         });
     },
 };

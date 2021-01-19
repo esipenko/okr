@@ -22,3 +22,8 @@ export enum ACLRule {
   COMPANY_UPDATE = "COMPANY_UPDATE",
   COMPANY_DELETE = "COMPANY_DELETE",
 }
+
+export enum DefaultRoles {
+  Administrator = "Administrator",
+  User = "User",
+}

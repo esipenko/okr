@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseGuards, Req, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req, Delete, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRegistrationDto } from './dto/user-registatrion.dto';
 import { Request } from 'express';
@@ -44,10 +44,18 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard(), RoleGuard)
-    @RoleControl(ACLRule.USERS_LIST)
+    @RoleControl(ACLRule.USERS_DELETE)
     @Delete('/:user_id')
     async deleteUserById(@Param('user_id') userId: number): Promise<UserDto> {
         const userEntity = await this.userService.deleteUserByUserId(userId);
+        return new UserDto(userEntity);
+    }
+
+    @UseGuards(AuthGuard(), RoleGuard)
+    @RoleControl(ACLRule.USERS_EDIT)
+    @Put()
+    async editUser(@Body() userDto: UserDto): Promise<UserDto> {
+        const userEntity = await this.userService.updateUser(userDto);
         return new UserDto(userEntity);
     }
 }
